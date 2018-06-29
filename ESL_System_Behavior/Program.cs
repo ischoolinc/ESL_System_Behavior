@@ -19,13 +19,13 @@ namespace ESL_System_Behavior
         {
             
 
-            Catalog ribbon4 = RoleAclSource.Instance["教務作業"]["功能按鈕"];
-            ribbon4.Add(new RibbonFeature("ESL日常生活表現", "管理課堂表現內容清單"));
+            Catalog ribbon4 = RoleAclSource.Instance["課程"]["功能按鈕"];
+            ribbon4.Add(new RibbonFeature("AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F", "管理課堂表現內容清單"));
 
-            //MotherForm.RibbonBarItems["課程", "ESL課程"]["管理課堂表現內容清單"].Enable = UserAcl.Current["管理課堂表現內容清單"].Executable;
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["管理課堂表現內容清單"].Enable = true;
+            MotherForm.RibbonBarItems["課程", "ESL課程課堂表現"]["管理課堂表現內容清單"].Enable = UserAcl.Current["AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F"].Executable;
+            //MotherForm.RibbonBarItems["課程", "ESL課程"]["管理課堂表現內容清單"].Enable = true;
 
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["管理課堂表現內容清單"].Click += delegate
+            MotherForm.RibbonBarItems["課程", "ESL課程課堂表現"]["管理課堂表現內容清單"].Click += delegate
             {
                 Form.BehaviorCommentSettingForm bcsf = new Form.BehaviorCommentSettingForm();
 

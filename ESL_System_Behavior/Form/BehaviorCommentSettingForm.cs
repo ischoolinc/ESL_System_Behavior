@@ -66,9 +66,11 @@ namespace ESL_System_Behavior.Form
             string sql = "";
 
             // 兜資料
-            List<string> insertdataList = new List<string>(); // 新增的資料
-            List<string> updatedataList = new List<string>(); // 更新的資料
-            List<string> deletedataList = new List<string>(); // 刪除的資料
+            //List<string> insertdataList = new List<string>(); // 新增的資料
+            //List<string> updatedataList = new List<string>(); // 更新的資料
+            //List<string> deletedataList = new List<string>(); // 刪除的資料
+
+            List<string> rawdataList = new List<string>(); // 2018/6/28 穎驊聽取恩證的建議後，決定建立一個raw_data，統一存放，這樣SQL 才好維護
 
             //檢視 目前介面 dataGridViewX1上有的項目 
             foreach (DataGridViewRow row in dataGridViewX1.Rows)
@@ -77,11 +79,13 @@ namespace ESL_System_Behavior.Form
                 if ("" + row.Tag == "" && !row.IsNewRow)
                 {
                     string insertdata = string.Format(@"
-                    SELECT
-                    true::BOOLEAN AS is_default                    
-                    ,'{0}':: TEXT AS comment   
+    SELECT
+        NULL :: BIGINT AS uid
+        ,true::BOOLEAN AS is_default                    
+        ,'{0}':: TEXT AS comment   
+        ,'INSERT' :: TEXT AS action
                   ", row.Cells[0].Value);
-                    insertdataList.Add(insertdata);
+                    rawdataList.Add(insertdata);
                 }
 
                 // 存放於原本字典有的東西，但是後來內容改變， 為update 內容。
@@ -90,13 +94,14 @@ namespace ESL_System_Behavior.Form
                     if (oriCommentDict["" + row.Tag] != "" + row.Cells[0].Value)
                     {
                         string updatedata = string.Format(@"
-                    SELECT
-                    {0} :: BIGINT AS uid
-                    ,true::BOOLEAN AS is_default                    
-                    ,'{1}':: TEXT AS comment   
+    SELECT
+        {0} :: BIGINT AS uid
+        ,true::BOOLEAN AS is_default                    
+        ,'{1}':: TEXT AS comment 
+        ,'UPDATE' :: TEXT AS action
                   ", row.Tag, row.Cells[0].Value);
 
-                        updatedataList.Add(updatedata);
+                        rawdataList.Add(updatedata);
                     }
                 }
 
@@ -122,112 +127,70 @@ namespace ESL_System_Behavior.Form
                 if (!hasKey)
                 {
                     string deletedata = string.Format(@"
-                    SELECT
-                    {0} :: BIGINT AS uid
+    SELECT
+        {0} :: BIGINT AS uid
+        ,true::BOOLEAN AS is_default                    
+        ,'':: TEXT AS comment   
+        ,'DELETE' :: TEXT AS action
                   ", key);
 
-                    deletedataList.Add(deletedata);
+                    rawdataList.Add(deletedata);
 
                 }
+            }
+
+            // 甚麼都沒更正，也就甚麼都不做。
+            if (rawdataList.Count == 0)
+            {
+                return;
             }
 
             sql = "WITH ";
 
 
+            string rawData = string.Join(" UNION ALL", rawdataList);
 
+            sql += string.Format(@"raw_data AS( {0} )", rawData);
 
-            if (insertdataList.Count > 0)
-            {
-
-
-                string insertData = string.Join(" UNION ALL", insertdataList);
-
-                sql += string.Format(@"insert_data_row AS( 
-            			 {0}),insert_data AS
-(
-            -- 新增 
-            INSERT INTO $esl.behavior_comment_template(
-            	is_default
-            	, comment	
-            )
-            SELECT 
-            	insert_data_row.is_default::BOOLEAN AS is_default
-                ,insert_data_row.comment::TEXT AS comment	
-            FROM
-            	insert_data_row            
-            RETURNING  $esl.behavior_comment_template.* 
+            sql += @"
+,insert_data AS
+(   -- 新增 
+    INSERT INTO $esl.behavior_comment_template(
+        is_default
+        , comment   
+    )
+    SELECT 
+        raw_data.is_default::BOOLEAN AS is_default
+        ,raw_data.comment::TEXT AS comment   
+    FROM
+        raw_data
+    WHERE raw_data.action ='INSERT'                    
+    RETURNING  $esl.behavior_comment_template.* 
+)       
+,update_data AS(
+    -- 更新
+    Update $esl.behavior_comment_template
+    SET
+        comment = raw_data.comment
+    FROM 
+        raw_data    
+    WHERE $esl.behavior_comment_template.uid = raw_data.uid  
+        AND raw_data.action ='UPDATE'
+    RETURNING  $esl.behavior_comment_template.* 
 )
-            ", insertData);
-
-
-
-            }
-
-            if (updatedataList.Count > 0)
-            {
-                if (insertdataList.Count > 0) //前項有東西，加逗號
-                {
-                    sql += ",";
-                }
-
-                string updateData = string.Join(" UNION ALL", updatedataList);
-
-                sql += string.Format(@"update_data_row AS( 
-                			 {0}),update_data AS(
-                -- 更新
-                Update $esl.behavior_comment_template
-                SET
-                comment = update_data_row.comment
-                FROM update_data_row
-                WHERE $esl.behavior_comment_template.uid = update_data_row.uid	
-                RETURNING  $esl.behavior_comment_template.* 
+,delete_data AS(
+    -- 刪除
+    DELETE 
+    FROM $esl.behavior_comment_template    
+    WHERE $esl.behavior_comment_template.uid IN (
+        SELECT raw_data.uid
+        FROM raw_data        
+        WHERE raw_data.action ='DELETE'
+     )                
 )
-                                ", updateData);
+  ";
 
-
-            }
-
-            if (deletedataList.Count > 0)
-            {
-                if (insertdataList.Count > 0 | updatedataList.Count > 0) //前項有東西，加逗號
-                {
-                    sql += ",";
-                }
-
-                string deleteData = string.Join(" UNION ALL", deletedataList);
-
-
-                sql += string.Format(@"delete_data_row AS( 
-                			 {0}), delete_data AS(
-                -- 刪除
-                DELETE 
-                FROM $esl.behavior_comment_template
-                WHERE $esl.behavior_comment_template.uid IN (
-                		SELECT delete_data_row.uid
-                		FROM delete_data_row
-                		) 
-)
-                                ", deleteData);
-
-
-                if (insertdataList.Count > 0 && updatedataList.Count ==0) //若 insert 與 delete 單獨存在會逾時爆掉，需要加這個，明確規範順序
-                {
-                    sql += @",test_data1 AS(
-                    SELECT * FROM delete_data_row
-                    LEFT JOIN insert_data ON delete_data_row.uid = NULL
-                  ) ";
-                }
-
-                if (insertdataList.Count ==0 && updatedataList.Count > 0) //若 update 與 delete 單獨存在會逾時爆掉，需要加這個，明確規範順序
-                {
-                    sql += @",test_data2 AS(
-                    SELECT * FROM delete_data_row
-                    LEFT JOIN update_data ON delete_data_row.uid = NULL
-                  ) ";
-                }
-
-
-            }
+            // test_data1、test_data2 為避免 delete 與 insert|| update 配對 造成逾時
 
             string _actor = DSAServices.UserAccount; ;
             string _client_info = ClientInfo.GetCurrentClientInfo().OutputResult().OuterXml;
