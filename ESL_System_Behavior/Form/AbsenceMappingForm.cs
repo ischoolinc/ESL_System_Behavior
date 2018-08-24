@@ -15,6 +15,9 @@ using K12.Data;
 using System.Xml;
 using FISCA.Authentication;
 using FISCA.LogAgent;
+using FISCA.DSAUtil;
+using Framework.Feature;
+
 
 namespace ESL_System_Behavior.Form
 {
@@ -33,7 +36,9 @@ namespace ESL_System_Behavior.Form
 
         private void BehaviorCommentSettingForm_Load(object sender, EventArgs e)
         {
-            
+            // ESL 的目前設定 作為和學務作業缺曠類別的對照
+            List<string> eslSetList = new List<string>();
+
             string query = "SELECT * from $esl.attendance_absence";
 
             QueryHelper qh = new QueryHelper();
@@ -48,23 +53,114 @@ namespace ESL_System_Behavior.Form
                     row.CreateCells(dataGridViewX1);
 
                     row.Tag = dr["uid"];
-                    row.Cells[0].Value = dr["name"];                    
+                    row.Cells[0].Value = dr["name"];
                     row.Cells[1].Value = dr["english_name"];
                     row.Cells[2].Value = dr["english_abbreviation"];
-                    
+
 
                     // 建立原本資訊的字典，作為對照用
                     oriCommentDict.Add("" + dr["uid"], "" + dr["name"] + "_" + dr["english_name"] + "_" + dr["english_abbreviation"]);
 
                     dataGridViewX1.Rows.Add(row);
+
+                    eslSetList.Add("" + dr["name"]);
                 }
             }
+            else
+            {
+
+                //儲存 學務作業目前設定的缺曠類別，作為提醒使用者設定需與學務作業一致
+                List<string> _behaviorSetList = new List<string>();
+
+                //取得Xml結構
+                DSResponse _dsrsp = Config.GetAbsenceList();
+                DSXmlHelper _helper = _dsrsp.GetContent();
+                foreach (XmlElement element in _helper.GetElements("Absence"))
+                {
+
+                    string name = element.GetAttribute("Name");
+
+                    _behaviorSetList.Add(name);
+                }
+
+                foreach (string abs in _behaviorSetList)
+                {
+                    DataGridViewRow row = new DataGridViewRow();
+
+                    row.CreateCells(dataGridViewX1);
+
+                    row.Cells[0].Value = abs;
+
+                    dataGridViewX1.Rows.Add(row);
+                }
+
+
+            }
+
+            //儲存 學務作業目前設定的缺曠類別，作為提醒使用者設定需與學務作業一致
+            List<string> behaviorSetList = new List<string>();
+
+            //取得Xml結構
+            DSResponse dsrsp = Config.GetAbsenceList();
+            DSXmlHelper helper = dsrsp.GetContent();
+            foreach (XmlElement element in helper.GetElements("Absence"))
+            {
+
+                string name = element.GetAttribute("Name");
+
+                behaviorSetList.Add(name);
+            }
+
+            List<string> behaviorSetList_OriOlrder = new List<string>(); // 記住原順序的List
+
+            behaviorSetList_OriOlrder.AddRange(behaviorSetList);
+
+            eslSetList.Sort();
+            behaviorSetList.Sort();
+
+
+
+            if (!eslSetList.SequenceEqual(behaviorSetList))
+            {
+                if (MsgBox.Show("目前ESL缺曠對照，其中缺曠類別與學務作業/缺曠類別管理並不一致，請問是否重新同步設定一致?", "提醒", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                {
+                    dataGridViewX1.Rows.Clear();
+
+                    foreach (string abs in behaviorSetList_OriOlrder)
+                    {
+                        DataGridViewRow row = new DataGridViewRow();
+
+                        row.CreateCells(dataGridViewX1);
+
+                        row.Cells[0].Value = abs;
+
+                        dataGridViewX1.Rows.Add(row);
+                    }
+                };
+            }
+
+
+
         }
 
 
         // 儲存
         private void buttonX1_Click(object sender, EventArgs e)
         {
+            List<string> checkRepeatList = new List<string>();
+
+            //檢視 目前介面 dataGridViewX1上有的項目 
+            foreach (DataGridViewRow row in dataGridViewX1.Rows)
+            {
+                if (checkRepeatList.Contains("" + row.Cells[0].Value))
+                {
+                    MsgBox.Show("表單中有相同缺曠名稱，請重新設定。");
+
+                    return;
+                }
+
+                checkRepeatList.Add("" + row.Cells[0].Value);              
+            }
 
             string sql = "";
 

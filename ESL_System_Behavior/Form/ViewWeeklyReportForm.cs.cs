@@ -22,7 +22,6 @@ namespace ESL_System_Behavior.Form
     public partial class ViewWeeklyReportForm : BaseForm
     {
         
-
         public ViewWeeklyReportForm()
         {
             InitializeComponent();
@@ -59,7 +58,7 @@ namespace ESL_System_Behavior.Form
             }
 
 
-
+            dataGridViewX1.Rows.Clear();
 
             string query = string.Format(@"SELECT $esl.weekly_report.uid,course.course_name,teacher.teacher_name,$esl.weekly_report.end_date,$esl.weekly_report.is_send FROM $esl.weekly_report 
 LEFT JOIN course ON $esl.weekly_report.ref_course_id = course.id
@@ -81,10 +80,7 @@ WHERE course.school_year = '{0}' AND semester = '{1}' AND end_date >= TIMESTAMP 
                     row.Cells[0].Value = dr["course_name"];
                     row.Cells[1].Value = dr["teacher_name"];
                     row.Cells[2].Value = ""+ dr["is_send"] == "true" ? "是" : "否";
-
-
                     
-
                     dataGridViewX1.Rows.Add(row);
                 }
             }

@@ -119,7 +119,7 @@
             this.Controls.Add(this.buttonX1);
             this.DoubleBuffered = true;
             this.Name = "BehaviorCommentSettingForm";
-            this.Text = "管理課堂表現內容清單";
+            this.Text = "設定Behavior General Commend清單";
             this.Load += new System.EventHandler(this.BehaviorCommentSettingForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewX1)).EndInit();
             this.ResumeLayout(false);
