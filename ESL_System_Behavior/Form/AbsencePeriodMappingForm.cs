@@ -36,7 +36,7 @@ namespace ESL_System_Behavior.Form
         private void BehaviorCommentSettingForm_Load(object sender, EventArgs e)
         {
             // ESL 的目前設定 作為和學務作業缺曠類別的對照
-            List<string> eslSetList = new List<string>();
+            List<Period> eslSetList = new List<Period>();
 
             string query = "SELECT * from $esl.attendance_period ORDER BY sort ASC ";
 
@@ -63,13 +63,13 @@ namespace ESL_System_Behavior.Form
 
                     dataGridViewX1.Rows.Add(row);
 
-                    eslSetList.Add("" + dr["name"]);
+                    eslSetList.Add(new Period() { Name = "" + dr["name"], Type = "" + dr["type"], Sort = "" + dr["sort"] });
                 }
             }
             else
             {
                 //儲存 學務作業目前設定的缺曠節次類別，作為提醒使用者設定需與學務作業一致
-                List<string> _behaviorSetList = new List<string>();
+                List<Period> _behaviorSetList = new List<Period>();
 
                 //取得Xml結構
                 DSResponse _dsrsp = Config.GetPeriodList();
@@ -77,17 +77,31 @@ namespace ESL_System_Behavior.Form
                 foreach (XmlElement element in _helper.GetElements("Period"))
                 {
 
-                    string name = element.GetAttribute("Name");
+                    Period p = new Period();
 
-                    _behaviorSetList.Add(name);
+                    string name = element.GetAttribute("Name");
+                    string type = element.GetAttribute("Type");
+                    string sort = element.GetAttribute("Sort");
+
+                    p.Name = name;
+                    p.Type = type;
+                    p.Sort = sort;
+
+
+                    _behaviorSetList.Add(p);
                 }
-                foreach (string ps in _behaviorSetList)
+                dataGridViewX1.Rows.Clear();
+
+                foreach (Period p in _behaviorSetList)
                 {
                     DataGridViewRow row = new DataGridViewRow();
 
                     row.CreateCells(dataGridViewX1);
 
-                    row.Cells[0].Value = ps;
+                    row.Cells[0].Value = p.Name;
+                    row.Cells[1].Value = p.Type;
+                    row.Cells[3].Value = p.Type;
+                    row.Cells[4].Value = p.Sort;
 
                     dataGridViewX1.Rows.Add(row);
                 }
@@ -97,7 +111,7 @@ namespace ESL_System_Behavior.Form
 
 
             //儲存 學務作業目前設定的缺曠節次類別，作為提醒使用者設定需與學務作業一致
-            List<string> behaviorSetList = new List<string>();
+            List<Period> behaviorSetList = new List<Period>();
 
             //取得Xml結構
             DSResponse dsrsp = Config.GetPeriodList();
@@ -105,31 +119,41 @@ namespace ESL_System_Behavior.Form
             foreach (XmlElement element in helper.GetElements("Period"))
             {
 
-                string name = element.GetAttribute("Name");
+                Period p = new Period();
 
-                behaviorSetList.Add(name);
+                string name = element.GetAttribute("Name");
+                string type = element.GetAttribute("Type");
+                string sort = element.GetAttribute("Sort");
+
+                p.Name = name;
+                p.Type = type;
+                p.Sort = sort;
+
+                behaviorSetList.Add(p);
             }
 
-            List<string> behaviorSetList_OriOlrder = new List<string>(); // 記住原順序的List
+
+            List<Period> behaviorSetList_OriOlrder = new List<Period>(); // 記住原順序的List
 
             behaviorSetList_OriOlrder.AddRange(behaviorSetList);
 
-            eslSetList.Sort();
-            behaviorSetList.Sort();
 
-            if (!eslSetList.SequenceEqual(behaviorSetList))
+            if (!ComparePeriodListSort(eslSetList,behaviorSetList))
             {
-                if (MsgBox.Show("目前ESL節次對照，其中缺曠節次與學務作業/每日節次管理並不一致，請問是否重新同步設定一致?", "提醒", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                if (MsgBox.Show("目前ESL節次對照，其中缺曠節次資料與學務作業/每日節次管理並不一致，請問是否重新同步設定一致?", "提醒", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     dataGridViewX1.Rows.Clear();
 
-                    foreach (string ps in behaviorSetList_OriOlrder)
+                    foreach (Period p in behaviorSetList_OriOlrder)
                     {
                         DataGridViewRow row = new DataGridViewRow();
 
                         row.CreateCells(dataGridViewX1);
 
-                        row.Cells[0].Value = ps;
+                        row.Cells[0].Value = p.Name;
+                        row.Cells[1].Value = p.Type;
+                        row.Cells[3].Value = p.Type;
+                        row.Cells[4].Value = p.Sort;
 
                         dataGridViewX1.Rows.Add(row);
                     }
@@ -184,7 +208,7 @@ namespace ESL_System_Behavior.Form
                 // 存放於原本字典有的東西，但是後來內容改變， 為update 內容。
                 if (oriCommentDict.ContainsKey("" + row.Tag) && !row.IsNewRow)
                 {
-                    if (oriCommentDict["" + row.Tag] != "" + row.Cells[0].Value +"_" + row.Cells[1].Value + "_" + row.Cells[2].Value + "_" + row.Cells[3].Value + "_" + row.Cells[4].Value )
+                    if (oriCommentDict["" + row.Tag] != "" + row.Cells[0].Value + "_" + row.Cells[1].Value + "_" + row.Cells[2].Value + "_" + row.Cells[3].Value + "_" + row.Cells[4].Value)
                     {
                         string updatedata = string.Format(@"
     SELECT
@@ -201,7 +225,8 @@ namespace ESL_System_Behavior.Form
                     }
                 }
 
-                if (!nowCommentList.Contains("("+row.Cells[0].Value+"_" + row.Cells[1].Value + "_" + row.Cells[2].Value + "_" + row.Cells[3].Value + "_" + row.Cells[4].Value +  ")") && !row.IsNewRow)                {
+                if (!nowCommentList.Contains("(" + row.Cells[0].Value + "_" + row.Cells[1].Value + "_" + row.Cells[2].Value + "_" + row.Cells[3].Value + "_" + row.Cells[4].Value + ")") && !row.IsNewRow)
+                {
                     nowCommentList.Add("(" + row.Cells[0].Value + "_" + row.Cells[1].Value + "_" + row.Cells[2].Value + "_" + row.Cells[3].Value + "_" + row.Cells[4].Value + ")");
                 }
 
@@ -345,8 +370,53 @@ VALUES ('{0}'::TEXT
             this.Close();
         }
 
-        
+
+
+        // 比較兩個PList 內容物、順序是否相同
+        private bool ComparePeriodListSort(List<Period> list1, List<Period> list2)
+        {
+            bool result = true;
+
+            string s1 = "";
+            string s2 = "";
+
+            foreach (Period p1 in list1)
+            {
+                s1 += p1.Name + "_" + p1.Type + "_" + p1.Sort;
+            }
+
+            foreach (Period p2 in list2)
+            {
+                s2 += p2.Name + "_" + p2.Type + "_" + p2.Sort;
+            }
+
+            if (s1 == s2)
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+       
+            return result;
+        }
+
+
+
     }
+
+
+    // 暫時用於本WF 的class
+    public class Period
+    {
+        public string Name;
+        public string Type;
+        public string Sort;
+
+    }
+
+
 }
 
 
