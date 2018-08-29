@@ -36,6 +36,9 @@ namespace ESL_System_Behavior.Form
 
         private void BehaviorCommentSettingForm_Load(object sender, EventArgs e)
         {
+            // 儲存使用者目前的設定 <中文節次名稱,英文節次名稱>
+            Dictionary<string, AbsenceEng> userSettingDict = new Dictionary<string, AbsenceEng>();
+
             // ESL 的目前設定 作為和學務作業缺曠類別的對照
             List<string> eslSetList = new List<string>();
 
@@ -64,6 +67,8 @@ namespace ESL_System_Behavior.Form
                     dataGridViewX1.Rows.Add(row);
 
                     eslSetList.Add("" + dr["name"]);
+
+                    userSettingDict.Add("" + dr["name"], new AbsenceEng() { EnglishName = "" + dr["english_name"], EnglishAbbreviation = "" + dr["english_abbreviation"] });
                 }
             }
             else
@@ -122,21 +127,21 @@ namespace ESL_System_Behavior.Form
 
             if (!eslSetList.SequenceEqual(behaviorSetList))
             {
-                if (MsgBox.Show("目前ESL缺曠對照，其中缺曠類別與學務作業/缺曠類別管理並不一致，請問是否重新同步設定一致?", "提醒", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+
+                dataGridViewX1.Rows.Clear();
+
+                foreach (string abs in behaviorSetList_OriOlrder)
                 {
-                    dataGridViewX1.Rows.Clear();
+                    DataGridViewRow row = new DataGridViewRow();
 
-                    foreach (string abs in behaviorSetList_OriOlrder)
-                    {
-                        DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(dataGridViewX1);
 
-                        row.CreateCells(dataGridViewX1);
+                    row.Cells[0].Value = abs;
+                    row.Cells[1].Value = userSettingDict.ContainsKey(abs) ? userSettingDict[abs].EnglishName : "";
+                    row.Cells[2].Value = userSettingDict.ContainsKey(abs) ? userSettingDict[abs].EnglishAbbreviation : "";
 
-                        row.Cells[0].Value = abs;
-
-                        dataGridViewX1.Rows.Add(row);
-                    }
-                };
+                    dataGridViewX1.Rows.Add(row);
+                }
             }
 
 
@@ -159,7 +164,7 @@ namespace ESL_System_Behavior.Form
                     return;
                 }
 
-                checkRepeatList.Add("" + row.Cells[0].Value);              
+                checkRepeatList.Add("" + row.Cells[0].Value);
             }
 
             string sql = "";
@@ -186,7 +191,7 @@ namespace ESL_System_Behavior.Form
                 // 存放於原本字典有的東西，但是後來內容改變， 為update 內容。
                 if (oriCommentDict.ContainsKey("" + row.Tag) && !row.IsNewRow)
                 {
-                    if (oriCommentDict["" + row.Tag] != "" + row.Cells[0].Value +"_" + row.Cells[1].Value + "_" + row.Cells[2].Value)
+                    if (oriCommentDict["" + row.Tag] != "" + row.Cells[0].Value + "_" + row.Cells[1].Value + "_" + row.Cells[2].Value)
                     {
                         string updatedata = string.Format(@"
     SELECT
@@ -201,7 +206,7 @@ namespace ESL_System_Behavior.Form
                     }
                 }
 
-                if (!nowCommentList.Contains("("+row.Cells[0].Value+"_" + row.Cells[1].Value + "_" + row.Cells[2].Value + ")") && !row.IsNewRow)
+                if (!nowCommentList.Contains("(" + row.Cells[0].Value + "_" + row.Cells[1].Value + "_" + row.Cells[2].Value + ")") && !row.IsNewRow)
                 {
                     nowCommentList.Add("(" + row.Cells[0].Value + "_" + row.Cells[1].Value + "_" + row.Cells[2].Value + ")");
                 }
@@ -337,7 +342,16 @@ VALUES ('{0}'::TEXT
             this.Close();
         }
 
-        
+
+
+
+    }
+
+    public class AbsenceEng
+    {
+        public string EnglishName;
+        public string EnglishAbbreviation;
+
     }
 }
 

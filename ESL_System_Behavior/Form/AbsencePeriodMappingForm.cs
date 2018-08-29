@@ -35,6 +35,9 @@ namespace ESL_System_Behavior.Form
 
         private void BehaviorCommentSettingForm_Load(object sender, EventArgs e)
         {
+            // 儲存使用者目前的設定 <中文節次名稱,英文節次名稱>
+            Dictionary<string, string> userSettingDict = new Dictionary<string, string>();
+
             // ESL 的目前設定 作為和學務作業缺曠類別的對照
             List<Period> eslSetList = new List<Period>();
 
@@ -42,7 +45,7 @@ namespace ESL_System_Behavior.Form
 
             QueryHelper qh = new QueryHelper();
             DataTable dt = qh.Select(query);
-
+            
             if (dt.Rows.Count > 0)
             {
                 foreach (DataRow dr in dt.Rows)
@@ -64,6 +67,8 @@ namespace ESL_System_Behavior.Form
                     dataGridViewX1.Rows.Add(row);
 
                     eslSetList.Add(new Period() { Name = "" + dr["name"], Type = "" + dr["type"], Sort = "" + dr["sort"] });
+
+                    userSettingDict.Add("" + dr["name"], "" + dr["english_name"]);
                 }
             }
             else
@@ -99,7 +104,7 @@ namespace ESL_System_Behavior.Form
                     row.CreateCells(dataGridViewX1);
 
                     row.Cells[0].Value = p.Name;
-                    row.Cells[1].Value = p.Type;
+                    row.Cells[1].Value = p.Type;                    
                     row.Cells[3].Value = p.Type;
                     row.Cells[4].Value = p.Sort;
 
@@ -132,32 +137,29 @@ namespace ESL_System_Behavior.Form
                 behaviorSetList.Add(p);
             }
 
-
             List<Period> behaviorSetList_OriOlrder = new List<Period>(); // 記住原順序的List
 
             behaviorSetList_OriOlrder.AddRange(behaviorSetList);
 
 
-            if (!ComparePeriodListSort(eslSetList,behaviorSetList))
+            if (!ComparePeriodListSort(eslSetList, behaviorSetList))
             {
-                if (MsgBox.Show("目前ESL節次對照，其中缺曠節次資料與學務作業/每日節次管理並不一致，請問是否重新同步設定一致?", "提醒", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                dataGridViewX1.Rows.Clear();
+
+                foreach (Period p in behaviorSetList_OriOlrder)
                 {
-                    dataGridViewX1.Rows.Clear();
+                    DataGridViewRow row = new DataGridViewRow();
 
-                    foreach (Period p in behaviorSetList_OriOlrder)
-                    {
-                        DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(dataGridViewX1);
 
-                        row.CreateCells(dataGridViewX1);
+                    row.Cells[0].Value = p.Name;
+                    row.Cells[1].Value = p.Type;
+                    row.Cells[2].Value = userSettingDict.ContainsKey(p.Name) ? userSettingDict[p.Name] : ""; // 使用者如果原本有名稱，則填回去
+                    row.Cells[3].Value = p.Type;
+                    row.Cells[4].Value = p.Sort;
 
-                        row.Cells[0].Value = p.Name;
-                        row.Cells[1].Value = p.Type;
-                        row.Cells[3].Value = p.Type;
-                        row.Cells[4].Value = p.Sort;
-
-                        dataGridViewX1.Rows.Add(row);
-                    }
-                };
+                    dataGridViewX1.Rows.Add(row);
+                }
             }
 
         }
