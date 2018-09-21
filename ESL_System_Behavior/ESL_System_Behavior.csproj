@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Cells_201402">
+      <HintPath>Library\Aspose.Cells_201402.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="DevComponents.DotNetBar2, Version=9.5.0.1, Culture=neutral, PublicKeyToken=7eb7c3a35b91de04, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Library\DevComponents.DotNetBar2.dll</HintPath>
@@ -111,6 +115,12 @@
     <Compile Include="Form\AbsenceMappingForm.Designer.cs">
       <DependentUpon>AbsenceMappingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Form\ViewBehaviorInputForm.cs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\ViewBehaviorInputForm.cs.Designer.cs">
+      <DependentUpon>ViewBehaviorInputForm.cs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form\ViewWeeklyReportForm.cs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +198,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Form\AbsenceMappingForm.resx">
       <DependentUpon>AbsenceMappingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\ViewBehaviorInputForm.cs.resx">
+      <DependentUpon>ViewBehaviorInputForm.cs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\ViewWeeklyReportForm.cs.resx">
       <DependentUpon>ViewWeeklyReportForm.cs.cs</DependentUpon>
