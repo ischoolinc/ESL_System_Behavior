@@ -17,76 +17,79 @@ namespace ESL_System_Behavior
         [FISCA.MainMethod()]
         public static void Main()
         {
-
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"].Image = Properties.Resources.blackboard_config_64;
-
-            Catalog ribbon1 = RoleAclSource.Instance["課程"]["ESL課程"];
-            ribbon1.Add(new RibbonFeature("AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F", "設定Behavior General Commend清單"));
-
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["設定Behavior General Commend清單"].Enable = UserAcl.Current["AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F"].Executable;
-
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["設定Behavior General Commend清單"].Click += delegate
             {
-                Form.BehaviorCommentSettingForm bcsf = new Form.BehaviorCommentSettingForm();
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"].Image = Properties.Resources.blackboard_config_64;
 
-                bcsf.ShowDialog();
-            };
+                Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
+                ribbon.Add(new RibbonFeature("AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F", "設定Behavior General Commend清單"));
 
-            Catalog ribbon2 = RoleAclSource.Instance["課程"]["ESL課程"];
-            ribbon2.Add(new RibbonFeature("84615CE1 - E1B7 - 43A3 - AF91 - F33B95F0C960", "設定Attendance假別對照"));
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Commend清單"].Enable = UserAcl.Current["AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F"].Executable;
 
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["設定Attendance假別對照"].Enable = UserAcl.Current["84615CE1 - E1B7 - 43A3 - AF91 - F33B95F0C960"].Executable;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Commend清單"].Click += delegate
+                {
+                    Form.BehaviorCommentSettingForm bcsf = new Form.BehaviorCommentSettingForm();
 
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["設定Attendance假別對照"].Click += delegate
+                    bcsf.ShowDialog();
+                };
+            }
             {
-                Form.AbsenceMappingForm amf = new Form.AbsenceMappingForm();
+                Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
+                ribbon.Add(new RibbonFeature("84615CE1 - E1B7 - 43A3 - AF91 - F33B95F0C960", "設定Attendance假別對照"));
 
-                amf.ShowDialog();
-            };
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Attendance假別對照"].Enable = UserAcl.Current["84615CE1 - E1B7 - 43A3 - AF91 - F33B95F0C960"].Executable;
 
-            Catalog ribbon3 = RoleAclSource.Instance["課程"]["ESL課程"];
-            ribbon3.Add(new RibbonFeature("A052015A - B865 - 49E6 - 861D - 7B3B25B9BB63", "設定Attendance節次對照"));
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Attendance假別對照"].Click += delegate
+                {
+                    Form.AbsenceMappingForm amf = new Form.AbsenceMappingForm();
 
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["設定Attendance節次對照"].Enable = UserAcl.Current["A052015A - B865 - 49E6 - 861D - 7B3B25B9BB63"].Executable;
-
-
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["設定Attendance節次對照"].Click += delegate
+                    amf.ShowDialog();
+                };
+            }
             {
-                Form.AbsencePeriodMappingForm apmf = new Form.AbsencePeriodMappingForm();
+                Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
+                ribbon.Add(new RibbonFeature("A052015A - B865 - 49E6 - 861D - 7B3B25B9BB63", "設定Attendance節次對照"));
 
-                apmf.ShowDialog();
-            };
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Attendance節次對照"].Enable = UserAcl.Current["A052015A - B865 - 49E6 - 861D - 7B3B25B9BB63"].Executable;
 
 
-            Catalog ribbon4 = RoleAclSource.Instance["課程"]["ESL課程"];
-            ribbon4.Add(new RibbonFeature("3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F", "檢視WeeklyReport"));
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Attendance節次對照"].Click += delegate
+                {
+                    Form.AbsencePeriodMappingForm apmf = new Form.AbsencePeriodMappingForm();
 
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Enable = UserAcl.Current["3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F"].Executable;
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Size = RibbonBarButton.MenuButtonSize.Medium;
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Image = Properties.Resources.admissions_zoom_64;
-
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Click += delegate
+                    apmf.ShowDialog();
+                };
+            }
             {
-                Form.ViewWeeklyReportForm vwrf = new Form.ViewWeeklyReportForm();
+                Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
+                ribbon.Add(new RibbonFeature("3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F", "檢視WeeklyReport"));
 
-                vwrf.ShowDialog();
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Enable = UserAcl.Current["3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F"].Executable;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Size = RibbonBarButton.MenuButtonSize.Medium;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Image = Properties.Resources.admissions_zoom_64;
 
-            };
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Click += delegate
+                {
+                    Form.ViewWeeklyReportForm vwrf = new Form.ViewWeeklyReportForm();
 
+                    vwrf.ShowDialog();
 
-            Catalog ribbon5 = RoleAclSource.Instance["課程"]["ESL課程"];
-            ribbon5.Add(new RibbonFeature("BFE3D505-71EE-4CCA-B903-30EAA5F5AF9A", "檢視教師輸入"));
-
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["檢視教師輸入"].Enable = UserAcl.Current["BFE3D505-71EE-4CCA-B903-30EAA5F5AF9A"].Executable;
-
-
-            MotherForm.RibbonBarItems["課程", "ESL課程"]["Behavior項目"]["檢視教師輸入"].Click += delegate
+                };
+            }
             {
-                Form.ViewBehaviorInputForm vbif = new Form.ViewBehaviorInputForm();
+                Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
+                ribbon.Add(new RibbonFeature("BFE3D505-71EE-4CCA-B903-30EAA5F5AF9A", "檢視教師Behavior紀錄"));
 
-                vbif.ShowDialog();
-            };
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Enable = UserAcl.Current["BFE3D505-71EE-4CCA-B903-30EAA5F5AF9A"].Executable;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Size = RibbonBarButton.MenuButtonSize.Medium;
+                //MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Image = Properties.Resources.admissions_zoom_64;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Click += delegate
+                {
+                    Form.ViewBehaviorInputForm vbif = new Form.ViewBehaviorInputForm();
 
+                    vbif.ShowDialog();
+                };
+
+            }
         }
     }
 }

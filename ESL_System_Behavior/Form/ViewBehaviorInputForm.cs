@@ -43,10 +43,12 @@ namespace ESL_System_Behavior.Form
             comboBoxEx2.Items.Add("2");
             comboBoxEx2.Text = K12.Data.School.DefaultSemester;
 
+            this.dateTimeInput1.Value = DateTime.Now.Date;
+            this.dateTimeInput2.Value = DateTime.Now.Date;
         }
 
 
-        // 儲存
+        // 查詢
         private void buttonX1_Click(object sender, EventArgs e)
         {
             if (dateTimeInput1.Text == "" || dateTimeInput2.Text == "")
@@ -61,17 +63,46 @@ namespace ESL_System_Behavior.Form
                 return;
             }
 
-
+            oriCommentDict.Clear();
             dataGridViewX1.Rows.Clear();
 
             string query = string.Format(@"
-SELECT  $esl.behavior_data.uid,course.course_name,teacher.teacher_name,class.class_name,student.seat_no,student.student_number,student.name AS student_name,$esl.behavior_data.comment,$esl.behavior_data.create_date FROM  $esl.behavior_data
+SELECT  
+    $esl.behavior_data.uid
+    , course.course_name
+    , teacher.teacher_name
+    , class.class_name
+    , student.seat_no
+    , student.student_number
+    , student.name AS student_name
+    , student.english_name
+    , $esl.behavior_data.comment
+    , $esl.behavior_data.create_date 
+FROM  
+    $esl.behavior_data
 	LEFT JOIN course ON $esl.behavior_data.ref_course_id = course.id
 	LEFT JOIN teacher ON $esl.behavior_data.ref_teacher_id = teacher.id
 	LEFT JOIN student ON $esl.behavior_data.ref_student_id = student.id
 	LEFT JOIN class ON student.ref_class_id = class.id
-WHERE course.school_year = '{0}' AND semester = '{1}' AND create_date >= TIMESTAMP '{2}' AND create_date<= TIMESTAMP '{3}'
-ORDER BY course_name,class_name, seat_no ASC", comboBoxEx1.Text, comboBoxEx2.Text, dateTimeInput1.Value.Date.ToShortDateString(), dateTimeInput2.Value.Date.ToShortDateString());
+WHERE 
+    course.school_year = '{0}' 
+    AND semester = '{1}' 
+    AND create_date::DATE >= '{2}'::DATE
+    AND create_date::DATE <= '{3}'::DATE
+ORDER BY 
+    class.grade_year
+    , class.display_order
+    , class.class_name
+    , student.seat_no
+    , student.id
+    , course_name
+    , class_name
+"
+        , comboBoxEx1.Text
+        , comboBoxEx2.Text
+        , dateTimeInput1.Value.Date.ToShortDateString()
+        , dateTimeInput2.Value.Date.ToShortDateString()
+    );
 
             QueryHelper qh = new QueryHelper();
             DataTable dt = qh.Select(query);
@@ -85,43 +116,36 @@ ORDER BY course_name,class_name, seat_no ASC", comboBoxEx1.Text, comboBoxEx2.Tex
                     row.CreateCells(dataGridViewX1);
 
                     row.Tag = dr["uid"];
-
-                    row.Cells[0].Value = DateTime.Parse("" + dr["create_date"]).ToShortDateString(); ;
-                    row.Cells[1].Value = dr["course_name"];
-                    row.Cells[2].Value = dr["teacher_name"];
-                    row.Cells[3].Value = dr["class_name"];
-                    row.Cells[4].Value = dr["seat_no"];
-                    row.Cells[5].Value = dr["student_number"];
-                    row.Cells[6].Value = dr["student_name"];
-                    row.Cells[7].Value = dr["comment"];
-
+                    int i = 0;
+                    row.Cells[i++].Value = "" + dr["class_name"];
+                    row.Cells[i++].Value = "" + dr["seat_no"];
+                    row.Cells[i++].Value = "" + dr["student_number"];
+                    row.Cells[i++].Value = "" + dr["student_name"];
+                    row.Cells[i++].Value = "" + dr["english_name"];
+                    row.Cells[i++].Value = "" + dr["course_name"];
+                    row.Cells[i++].Value = "" + dr["teacher_name"];
+                    row.Cells[i++].Value = DateTime.Parse("" + dr["create_date"]).ToShortDateString(); ;
+                    row.Cells[i++].Value = "" + dr["comment"];
+                    row.Cells[i - 1].ToolTipText = "" + dr["comment"];
 
                     dataGridViewX1.Rows.Add(row);
 
 
                     // 建立原本資訊的字典，作為對照用
-                    oriCommentDict.Add("" + dr["uid"],""+dr["comment"]);
+                    oriCommentDict.Add("" + dr["uid"], "" + dr["comment"]);
 
                 }
             }
 
 
         }
-
-        // 取消
-        private void buttonX2_Click(object sender, EventArgs e)
-        {
-
-            this.Close();
-        }
-
         // 匯出畫面 dgv
         private void buttonX3_Click(object sender, EventArgs e)
         {
             Workbook book = new Workbook();
             book.Worksheets.Clear();
             Worksheet ws = book.Worksheets[book.Worksheets.Add()];
-            ws.Name = "檢視教師Behavior輸入";
+            ws.Name = "Behavior紀錄";
 
             int index = 0;
             Dictionary<string, int> map = new Dictionary<string, int>();
@@ -149,9 +173,10 @@ ORDER BY course_name,class_name, seat_no ASC", comboBoxEx1.Text, comboBoxEx2.Tex
                 index++;
             }
             #endregion
+            ws.AutoFitColumns();
 
             SaveFileDialog sd = new SaveFileDialog();
-            sd.FileName = "檢視教師Behavior輸入";
+            sd.FileName = "Behavior紀錄";
             sd.Filter = "Excel檔案(*.xlsx)|*.xlsx";
             if (sd.ShowDialog() == DialogResult.OK)
             {
@@ -196,16 +221,20 @@ ORDER BY course_name,class_name, seat_no ASC", comboBoxEx1.Text, comboBoxEx2.Tex
                 // 存放於原本字典有的東西，但是後來內容改變， 為update 內容。
                 if (oriCommentDict.ContainsKey("" + row.Tag) && !row.IsNewRow)
                 {
-                    if (oriCommentDict["" + row.Tag] != "" + row.Cells[7].Value)
+                    if (oriCommentDict["" + row.Tag] != "" + row.Cells[8].Value)
                     {
-                        updateLogList.Add("已將時間:「" + row.Cells[0].Value + "」,課程:「" + row.Cells[1].Value + "」,教師:「" + row.Cells[2].Value + "」給學生:「" + row.Cells[6].Value + "」的Comment由「" + oriCommentDict["" + row.Tag] + "」修改為:「" + row.Cells[7].Value + "」");
+                        updateLogList.Add(@"已將時間:「" + row.Cells[7].Value + "」" +
+                            ",課程:「" + row.Cells[5].Value + "」" +
+                            ",教師:「" + row.Cells[6].Value + "」" +
+                            "給學生:「" + row.Cells[3].Value + "」的Comment由「" +
+                            oriCommentDict["" + row.Tag] + "」修改為:「" + row.Cells[8].Value + "」");
 
                         string updatedata = string.Format(@"
         SELECT
             {0} :: BIGINT AS uid
             ,'{1}':: TEXT AS comment        
              ,'UPDATE' :: TEXT AS action
-                  ", row.Tag, row.Cells[7].Value);
+                  ", row.Tag, row.Cells[8].Value);
 
                         rawdataList.Add(updatedata);
                     }
@@ -270,6 +299,32 @@ VALUES ('{0}'::TEXT
 
             MsgBox.Show("儲存設定成功。");
 
+        }
+
+        private void dataGridViewX1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            dataGridViewX1.EndEdit();
+            dataGridViewX1.BeginEdit(false);
+            bool hasChange = false;
+            foreach (DataGridViewRow row in dataGridViewX1.Rows)
+            {
+                if((""+row.Cells[8].Value) != oriCommentDict["" + row.Tag])
+                {
+                    hasChange = true;
+                    row.Cells[8].Style.BackColor = Color.LightPink;
+                }
+                else
+                {
+                    row.Cells[8].Style.BackColor = Color.White;
+                }
+            }
+            this.buttonX4.Enabled = hasChange;
+        }
+
+        private void dataGridViewX1_Enter(object sender, EventArgs e)
+        {
+            this.ImeMode = ImeMode.Close;
+            this.ImeModeBase = ImeMode.Off;
         }
     }
 }

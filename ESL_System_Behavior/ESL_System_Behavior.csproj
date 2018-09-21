@@ -115,11 +115,11 @@
     <Compile Include="Form\AbsenceMappingForm.Designer.cs">
       <DependentUpon>AbsenceMappingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\ViewBehaviorInputForm.cs.cs">
+    <Compile Include="Form\ViewBehaviorInputForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\ViewBehaviorInputForm.cs.Designer.cs">
-      <DependentUpon>ViewBehaviorInputForm.cs.cs</DependentUpon>
+    <Compile Include="Form\ViewBehaviorInputForm.Designer.cs">
+      <DependentUpon>ViewBehaviorInputForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Form\ViewWeeklyReportForm.cs.cs">
       <SubType>Form</SubType>
@@ -199,8 +199,8 @@
     <EmbeddedResource Include="Form\AbsenceMappingForm.resx">
       <DependentUpon>AbsenceMappingForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\ViewBehaviorInputForm.cs.resx">
-      <DependentUpon>ViewBehaviorInputForm.cs.cs</DependentUpon>
+    <EmbeddedResource Include="Form\ViewBehaviorInputForm.resx">
+      <DependentUpon>ViewBehaviorInputForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\ViewWeeklyReportForm.cs.resx">
       <DependentUpon>ViewWeeklyReportForm.cs.cs</DependentUpon>
