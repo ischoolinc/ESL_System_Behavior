@@ -21,11 +21,11 @@ namespace ESL_System_Behavior
                 MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"].Image = Properties.Resources.blackboard_config_64;
 
                 Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
-                ribbon.Add(new RibbonFeature("AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F", "設定Behavior General Commend清單"));
+                ribbon.Add(new RibbonFeature("AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F", "設定Behavior General Comment清單"));
 
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Commend清單"].Enable = UserAcl.Current["AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F"].Executable;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Comment清單"].Enable = UserAcl.Current["AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F"].Executable;
 
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Commend清單"].Click += delegate
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Comment清單"].Click += delegate
                 {
                     Form.BehaviorCommentSettingForm bcsf = new Form.BehaviorCommentSettingForm();
 
