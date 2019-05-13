@@ -17,21 +17,23 @@ namespace ESL_System_Behavior
         [FISCA.MainMethod()]
         public static void Main()
         {
+            #region 設定Behavior General Comment清單
             {
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"].Image = Properties.Resources.blackboard_config_64;
+                // MotherForm.RibbonBarItems["學務作業", "批次作業/查詢"]["設定"].Image = Properties.Resources.blackboard_config_64;
 
-                Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
+                Catalog ribbon = RoleAclSource.Instance["學務作業"]["基本設定"];
                 ribbon.Add(new RibbonFeature("AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F", "設定Behavior General Comment清單"));
 
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Comment清單"].Enable = UserAcl.Current["AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F"].Executable;
+                MotherForm.RibbonBarItems["學務作業", "基本設定"]["設定"]["設定Behavior General Comment清單"].Enable = UserAcl.Current["AE1E3C3A - 5F63 - 4776 - 8ECB - 5CB76EDCE74F"].Executable;
 
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["設定"]["設定Behavior General Comment清單"].Click += delegate
+                MotherForm.RibbonBarItems["學務作業", "基本設定"]["設定"]["設定Behavior General Comment清單"].Click += delegate
                 {
                     Form.BehaviorCommentSettingForm bcsf = new Form.BehaviorCommentSettingForm();
 
                     bcsf.ShowDialog();
                 };
             }
+            #endregion
             {
                 Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
                 ribbon.Add(new RibbonFeature("84615CE1 - E1B7 - 43A3 - AF91 - F33B95F0C960", "設定Attendance假別對照"));
@@ -76,13 +78,13 @@ namespace ESL_System_Behavior
                 };
             }
             {
-                Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
+                Catalog ribbon = RoleAclSource.Instance["學務作業"]["批次作業/查詢"];
                 ribbon.Add(new RibbonFeature("BFE3D505-71EE-4CCA-B903-30EAA5F5AF9A", "檢視教師Behavior紀錄"));
 
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Enable = UserAcl.Current["BFE3D505-71EE-4CCA-B903-30EAA5F5AF9A"].Executable;
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Size = RibbonBarButton.MenuButtonSize.Medium;
+                MotherForm.RibbonBarItems["學務作業", "批次作業/查詢"]["檢視Behavior紀錄"].Enable = UserAcl.Current["BFE3D505-71EE-4CCA-B903-30EAA5F5AF9A"].Executable;
+                MotherForm.RibbonBarItems["學務作業", "批次作業/查詢"]["檢視Behavior紀錄"].Size = RibbonBarButton.MenuButtonSize.Medium;
                 //MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Image = Properties.Resources.admissions_zoom_64;
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視Behavior紀錄"].Click += delegate
+                MotherForm.RibbonBarItems["學務作業", "批次作業/查詢"]["檢視Behavior紀錄"].Click += delegate
                 {
                     Form.ViewBehaviorInputForm vbif = new Form.ViewBehaviorInputForm();
 
@@ -90,6 +92,18 @@ namespace ESL_System_Behavior
                 };
 
             }
+
+         
+            #region 生活行為紀錄 毛毛蟲
+            {
+                string key = "6B4FFF43-611A-4344-8711-4BA0F85DB73B";
+                RoleAclSource.Instance["學生"]["資料項目"].Add(new DetailItemFeature(key, "生活行為紀錄"));
+                if (FISCA.Permission.UserAcl.Current[key].Editable || FISCA.Permission.UserAcl.Current[key].Viewable)
+                {
+                    K12.Presentation.NLDPanels.Student.AddDetailBulider(new FISCA.Presentation.DetailBulider<BehaviorItem>());
+                }
+            } 
+            #endregion
         }
     }
 }

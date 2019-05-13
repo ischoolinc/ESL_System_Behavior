@@ -109,11 +109,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BehaviorItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BehaviorItem.Designer.cs">
+      <DependentUpon>BehaviorItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BehaviorRecord.cs" />
     <Compile Include="Form\AbsenceMappingForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form\AbsenceMappingForm.Designer.cs">
       <DependentUpon>AbsenceMappingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\BehaviorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\BehaviorForm.Designer.cs">
+      <DependentUpon>BehaviorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Form\ViewBehaviorInputForm.cs">
       <SubType>Form</SubType>
@@ -196,8 +209,14 @@
     <Content Include="Resource\blackboard_config_64.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BehaviorItem.resx">
+      <DependentUpon>BehaviorItem.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\AbsenceMappingForm.resx">
       <DependentUpon>AbsenceMappingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\BehaviorForm.resx">
+      <DependentUpon>BehaviorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\ViewBehaviorInputForm.resx">
       <DependentUpon>ViewBehaviorInputForm.cs</DependentUpon>
@@ -216,5 +235,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
