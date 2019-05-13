@@ -21,13 +21,12 @@ namespace ESL_System_Behavior.Form
         private string _SchoolYear;
         private string _SchoolSemester;
         private BackgroundWorker BGW = new BackgroundWorker();
-        private BehaviorRecord _BehaviorRecord;
         private QueryHelper _Qh;
-        private Dictionary<string, string> _DicCourseInfo;
+        private BehaviorRecord _BehaviorRecord;
+        private Dictionary<string, string> _DicCourseInfo; //課程資訊
         private String _Action = "";
         private BehaviorRecord _BefaoreUpdate; // LOG用 
-        private bool _Editable; 
-
+        private bool _Editable;  //權限使用
 
         public BehaviorForm()
         {
@@ -56,27 +55,24 @@ namespace ESL_System_Behavior.Form
             SetPerm();
             this._Action = "修改";
             this._BehaviorRecord = behavior;
-            this._BefaoreUpdate = behavior.ShallowCopy();
-            this.comboBoxCourse.Enabled = false;
-
+            this._BefaoreUpdate = behavior.ShallowCopy(); //淺程複製(log用)
+            this.comboBoxCourse.Enabled = false; //修改不給修改課程
         }
-
 
         private void BehaviorForm_Load(object sender, System.EventArgs e)
         {
-
-            _Student = Student.SelectByID(this._BehaviorRecord.StudentID);
+            _Student = Student.SelectByID(this._BehaviorRecord.StudentID); //取得 學生資訊(log用)
             //載入BGW
             BGW.DoWork += new DoWorkEventHandler(BGW_DoWork);
             BGW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BGW_RunWorkerCompleted);
 
             _Qh = new QueryHelper();
 
-            _DicCourseInfo = new Dictionary<string, string>(); //課程資訊使用
+            _DicCourseInfo = new Dictionary<string, string>(); //課程資訊使用<課程名稱,id>
 
             textBoxTeacher.Enabled = false;  //設定老師不能變更
-            this.dateTimeCreateDate.Value = DateTime.Now;
-            this.dateTimeCreateDate.Enabled = false;
+            this.dateTimeCreateDate.Value = DateTime.Now; //登錄時間不能變更
+            this.dateTimeCreateDate.Enabled = false;  //登錄時間不能變更
 
             //載入學年度學期 為了select 課程資訊
             _SchoolYear = School.DefaultSchoolYear;
@@ -88,6 +84,7 @@ namespace ESL_System_Behavior.Form
 
         void BGW_DoWork(object sender, DoWorkEventArgs e)
         {
+            #region 取得該學生當學期課程
             String queryCourse = @"
 SELECT
 	sc_attend.ref_course_id 
@@ -97,7 +94,7 @@ FROM
 	sc_attend 
 LEFT JOIN
   course
-  ON course.id = sc_attend.ref_course_id
+     ON course.id = sc_attend.ref_course_id
 WHERE 
  	ref_student_id = {0}
 	AND course.school_year = {1}
@@ -111,11 +108,13 @@ WHERE
             foreach (DataRow courseInfo in courses.Rows)
             {
                 _DicCourseInfo.Add(courseInfo.Field<string>("course_name"), courseInfo.Field<string>("ref_course_id"));
-            }
+            } 
+            #endregion
         }
 
         void BGW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            #region 填入<新增>的畫面
             if (this._Action == "新增")
             {
                 dateTimeCreateDate.Value = DateTime.Now;
@@ -128,49 +127,43 @@ WHERE
                         comboBoxCourse.Items.Add(courseId);
                     }
                 }
-                //加入原本課程
-                if (!comboBoxCourse.Items.Contains(this._BehaviorRecord.Course != null ? this._BehaviorRecord.Course : ""))
-                {
-                    comboBoxCourse.Items.Add(this._BehaviorRecord.Course);
-                }
-                comboBoxCourse.SelectedItem = this._BehaviorRecord.Course;//顯示遠本課程
-            }
+                ////加入原本課程
+                //if (!comboBoxCourse.Items.Contains(this._BehaviorRecord.Course != null ? this._BehaviorRecord.Course : ""))
+                //{
+                //    comboBoxCourse.Items.Add(this._BehaviorRecord.Course);
+                //}
+                //comboBoxCourse.SelectedItem = this._BehaviorRecord.Course;//顯示遠本課程
+            } 
+            #endregion
 
             else if (this._Action == "修改")
             {
-                dateTimeCreateDate.Value = DateTime.Parse(_BehaviorRecord.Date);//填入日期
+                dateTimeCreateDate.Value = DateTime.Parse(_BehaviorRecord.CreateDate);//填入日期
                 textBoxTeacher.Text = _BehaviorRecord.Teacher; //填入老師
                 textBoxComment.Text = _BehaviorRecord.Comment; //填入事由
+
                 //載入課程combox
-                comboBoxCourse.Items.Add("");
-                foreach (string courseId in _DicCourseInfo.Keys)
-                {
-                    if (!String.IsNullOrEmpty(courseId))
-                    {
-                        comboBoxCourse.Items.Add(courseId);
-                    }
-                }
-                //加入原本課程(因修改所以填入原本課程)
-                if (!comboBoxCourse.Items.Contains(this._BehaviorRecord.Course != null ? this._BehaviorRecord.Course : ""))
-                {
-                    comboBoxCourse.Items.Add(this._BehaviorRecord.Course);
-                }
+                //comboBoxCourse.Items.Add("");// 有可能沒有值
+                //foreach (string courseId in _DicCourseInfo.Keys)
+                //{
+                //    if (!String.IsNullOrEmpty(courseId))
+                //    {
+                //        comboBoxCourse.Items.Add(courseId);
+                //    }
+                //}
                 comboBoxCourse.SelectedItem = this._BehaviorRecord.Course;//顯示遠本課程
             }
 
-            //填入 good or detention 
+            //填入 Good or Detention 
             this.chexkBoxDetention.Checked = _BehaviorRecord.IsDentetion;
             this.CheckboxＧoodBehavior.Checked = _BehaviorRecord.IsGood;
         }
-
-        //樣板
-       
 
         //按下儲存
         private void btnSave_Click(object sender, EventArgs e)
         {
             btnSave.Enabled = false;
-            Boolean isPass = ValidateValue();
+            Boolean isPass = ValidateValue();//驗證必填欄位
 
             //如果驗證沒過就出去
             if (!isPass)
@@ -178,7 +171,8 @@ WHERE
                 btnSave.Enabled = true;
                 return;
             }
-            //把資料存到behavior record 物件
+
+            //驗證有過>>>把資料存到behaviorRecord 物件(新增時使用)
             FillDateToEdit();
 
             if (this._Action == "新增")
@@ -214,8 +208,8 @@ RETURNING *
                                          , this._BehaviorRecord.CourseID != null ? this._BehaviorRecord.CourseID : "null"
                                          , this._BehaviorRecord.Comment
                                          , this._BehaviorRecord.IsGood
-                                         , this._BehaviorRecord.IsDentetion)
-                                         ;
+                                         , this._BehaviorRecord.IsDentetion);
+                                         
                 try
                 {
                     DataTable retuen = _Qh.Select(insertSql);
@@ -226,21 +220,21 @@ RETURNING *
                     sb.Append("座號「" + (_Student.SeatNo.HasValue ? _Student.SeatNo.Value.ToString() : "") + "」");
                     sb.AppendLine("學生「" + DateTime.Now.Date+ "」");
                     sb.AppendLine("新增一筆生活行為記錄。");
-                    sb.AppendLine("登錄日期「" + _BehaviorRecord.Date + "」");
+                    sb.AppendLine("登錄日期「" + _BehaviorRecord.CreateDate + "」");
                     sb.AppendLine("課　　程「" + (this._BehaviorRecord.Course != null && this._BehaviorRecord.Course != "" ? this._BehaviorRecord.Course : "") + "」");
                     sb.AppendLine("事　　由「" + this._BehaviorRecord.Comment + "」");
-                    sb.AppendLine("Good Behavior「" + (this._BehaviorRecord.IsGood ? "是" : "否") + "」");
-                    sb.AppendLine("Detention「" + (this._BehaviorRecord.IsDentetion ? "是" : "否") + "」");
+                    sb.AppendLine("Good Behavior「" + ( this._BehaviorRecord.IsGood ? "是" : "否" ) + "」");
+                    sb.AppendLine("Detention「" + ( this._BehaviorRecord.IsDentetion ? "是" : "否" ) + "」");
                     ApplicationLog.Log("生活行為紀錄", "新增生活行為紀錄", "student", _Student.ID, sb.ToString());
 
                 }
                 catch (Exception ex)
                 {
-                    MsgBox.Show("新增[行為表現紀錄]發生錯誤: \n" + ex.Message);
+                    MsgBox.Show("新增[生活行為紀錄]發生錯誤: \n" + ex.Message);
                     return;
                 }
 
-                MsgBox.Show("新增[行為表現紀錄]成功!");
+                MsgBox.Show("新增[生活行為紀錄]成功!");
                 this.DialogResult = DialogResult.OK;
                 #endregion
             }
@@ -283,7 +277,7 @@ RETURNING *
                     sb.Append("座號「" + (_Student.SeatNo.HasValue ? _Student.SeatNo.Value.ToString() : "") + "」");
                     sb.AppendLine("學生「" + _Student.Name + "」");
                     sb.AppendLine("修改一筆生活行為紀錄。");
-                    sb.AppendLine("登錄日期「" + _BehaviorRecord.Date+ "」");
+                    sb.AppendLine("登錄日期「" + _BehaviorRecord.CreateDate+ "」");
                     sb.AppendLine("事　　由「" + this._BefaoreUpdate.Comment + "」");
                     sb.AppendLine("修改為「" + this._BehaviorRecord.Comment + "」");
                     sb.AppendLine("Good Behavior「" + (this._BefaoreUpdate.IsGood ? "是" : "否") + "」修改為「" + (this._BehaviorRecord.IsGood ? "是" : "否") + "」");
@@ -313,7 +307,7 @@ RETURNING *
             this._BehaviorRecord.CourseID = _DicCourseInfo.ContainsKey(comboBoxCourse.Text) ? _DicCourseInfo[comboBoxCourse.Text] : null;
             this._BehaviorRecord.IsGood = CheckboxＧoodBehavior.Checked;
             this._BehaviorRecord.IsDentetion = chexkBoxDetention.Checked;
-            this._BehaviorRecord.Date = dateTimeCreateDate.Value.ToString();
+            this._BehaviorRecord.CreateDate = dateTimeCreateDate.Value.ToString();
         }
 
         private void buttonX2_Click(object sender, EventArgs e)

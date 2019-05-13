@@ -35,6 +35,7 @@ namespace ESL_System_Behavior
 
             _worker.DoWork += new DoWorkEventHandler(BkW_DoWork);
             _worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BkW_RunWorkerCompleted);
+
             //當DetailContent的PrimaryKey 變動
             this.PrimaryKeyChanged += delegate { LoadingData(); };
 
@@ -82,9 +83,9 @@ namespace ESL_System_Behavior
             {
                 foreach (BehaviorRecord record in _listBehaviorReocrd)
                 {
-                    string[] row = { record.Date, record.Comment, record.Course };
+                    string[] row = { record.CreateDate, record.Comment, record.Course };
                     ListViewItem itm = new ListViewItem(row);
-
+                    //如果是 Detention 就 顯示紅色
                     if (record.IsDentetion == true)
                     {
                         itm.ForeColor = Color.Red;
@@ -93,7 +94,7 @@ namespace ESL_System_Behavior
                             itemin.ForeColor = Color.Red;
                         }
 
-                    }
+                    }//如果是 Good 就顯示 綠色
                     else if (record.IsGood == true)
                     {
                         itm.ForeColor = Color.Green;
@@ -102,7 +103,6 @@ namespace ESL_System_Behavior
                             itemin.ForeColor = Color.Green;
                         }
                     }
-
                     listView.Items.Add(itm);
                     itm.Tag = record;
                 }
@@ -157,7 +157,7 @@ ORDER BY create_date DESC
                 BehaviorRecord record = new BehaviorRecord();
                 record.StudentID = row.Field<string>("ref_student_id");
                 record.UID = row.Field<string>("uid");
-                record.Date = row.Field<string>("create_date");
+                record.CreateDate = row.Field<string>("create_date");
                 record.Comment = row.Field<string>("comment");
                 record.Teacher = row.Field<string>("teacher_name");
                 record.Course = row.Field<string>("course_id");
@@ -173,7 +173,7 @@ ORDER BY create_date DESC
         private void btnInsert_Click(object sender, EventArgs e)
         {
 
-            BehaviorForm editor = new BehaviorForm(_RunningID, _Editable);
+            BehaviorForm editor = new BehaviorForm(this.PrimaryKey, _Editable);
 
             if (editor.ShowDialog() == DialogResult.OK)
             {
@@ -237,8 +237,8 @@ ORDER BY create_date DESC
                 listSelectedStuID.Add(editor.UID);
             }
 
-            //如果
-            if (MsgBox.Show($"確認刪除所選擇-[行為表現記錄]?", "確認", MessageBoxButtons.YesNo) == DialogResult.No) return;
+            
+            if (MsgBox.Show($"確認刪除所選擇-[生活行為紀錄]?", "確認", MessageBoxButtons.YesNo) == DialogResult.No) return;
 
             try
             {
@@ -248,7 +248,7 @@ ORDER BY create_date DESC
             }
             catch (Exception ex)
             {
-                MsgBox.Show("刪除「服務學習記錄」資料失敗" + ex.Message);
+                MsgBox.Show("刪除「刪除生活行為紀錄」資料失敗" + ex.Message);
                 return;
             }
             LoadingData();
@@ -262,7 +262,7 @@ ORDER BY create_date DESC
             sb.AppendLine("學生「" + sr.Name + "」");
             foreach (BehaviorRecord behavior in behaviorList)
             {
-                sb.AppendLine("日期「" + behavior.Date + "」，生活行為紀錄已被刪除");
+                sb.AppendLine("日期「" + behavior.CreateDate + "」，生活行為紀錄已被刪除");
             }
             ApplicationLog.Log("生活行為紀錄", "刪除生活行為紀錄", "student", this.PrimaryKey, sb.ToString());
 
