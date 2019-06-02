@@ -85,9 +85,10 @@ FROM
 	LEFT JOIN student ON $esl.behavior_data.ref_student_id = student.id
 	LEFT JOIN class ON student.ref_class_id = class.id
 WHERE 
-    course.school_year = '{0}' 
-    AND semester = '{1}' 
-    AND create_date::DATE >= '{2}'::DATE
+   -- course.school_year = '{0}' 
+   -- AND semester = '{1}' 
+   -- AND
+    create_date::DATE >= '{2}'::DATE
     AND create_date::DATE <= '{3}'::DATE
 ORDER BY 
     class.grade_year

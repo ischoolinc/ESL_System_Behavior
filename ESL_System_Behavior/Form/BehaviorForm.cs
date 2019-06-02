@@ -56,7 +56,7 @@ namespace ESL_System_Behavior.Form
             this._Action = "修改";
             this._BehaviorRecord = behavior;
             this._BefaoreUpdate = behavior.ShallowCopy(); //淺程複製(log用)
-            this.comboBoxCourse.Enabled = false; //修改不給修改課程
+          
         }
 
         private void BehaviorForm_Load(object sender, System.EventArgs e)
@@ -151,7 +151,9 @@ WHERE
                 //        comboBoxCourse.Items.Add(courseId);
                 //    }
                 //}
-                comboBoxCourse.SelectedItem = this._BehaviorRecord.Course;//顯示遠本課程
+                comboBoxCourse.Items.Add(this._BehaviorRecord.Course);
+                comboBoxCourse.SelectedIndex = 0;//顯示遠本課程
+                this.comboBoxCourse.Enabled = false; //修改不給修改課程
             }
 
             //填入 Good or Detention 
