@@ -16,7 +16,7 @@ namespace ESL_System_Behavior
         //2018/4/11 穎驊因應康橋英文系統、弘文ESL 專案 ，開始建構教務作業ESL 評分樣版設定
         [FISCA.MainMethod()]
         public static void Main()
-        {
+      {
             #region 設定Behavior General Comment清單
             {
                 // MotherForm.RibbonBarItems["學務作業", "批次作業/查詢"]["設定"].Image = Properties.Resources.blackboard_config_64;

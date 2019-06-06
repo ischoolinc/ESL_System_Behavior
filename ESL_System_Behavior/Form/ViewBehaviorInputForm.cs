@@ -24,7 +24,11 @@ namespace ESL_System_Behavior.Form
     {
 
         // 用來記錄 原本的 評語Dict ，<uid,comment>
-        private Dictionary<string, string> oriCommentDict = new Dictionary<string, string>();
+        //private Dictionary<string, string> oriCommentDict = new Dictionary<string, string>();
+
+        // 用來記錄 欄位原本欄位 之資料 以便畫面上現示差異
+        private Dictionary<string, BehaviorRecord> _DicOriBehaviorRecord = new Dictionary<string, BehaviorRecord>();
+
 
         public ViewBehaviorInputForm()
         {
@@ -34,9 +38,9 @@ namespace ESL_System_Behavior.Form
         private void BehaviorCommentSettingForm_Load(object sender, EventArgs e)
         {
 
-            comboBoxEx1.Items.Add(""+( int.Parse(K12.Data.School.DefaultSchoolYear) - 1));
+            comboBoxEx1.Items.Add("" + (int.Parse(K12.Data.School.DefaultSchoolYear) - 1));
             comboBoxEx1.Items.Add(K12.Data.School.DefaultSchoolYear);
-            comboBoxEx1.Items.Add("" + (int.Parse(K12.Data.School.DefaultSchoolYear) +1));
+            comboBoxEx1.Items.Add("" + (int.Parse(K12.Data.School.DefaultSchoolYear) + 1));
             comboBoxEx1.Text = K12.Data.School.DefaultSchoolYear;
 
             comboBoxEx2.Items.Add("1");
@@ -63,7 +67,8 @@ namespace ESL_System_Behavior.Form
                 return;
             }
 
-            oriCommentDict.Clear();
+            //oriCommentDict.Clear();
+            _DicOriBehaviorRecord.Clear();
             dataGridViewX1.Rows.Clear();
 
             string query = string.Format(@"
@@ -78,6 +83,8 @@ SELECT
     , student.english_name
     , $esl.behavior_data.comment
     , $esl.behavior_data.create_date 
+    , $esl.behavior_data.is_good_behavior
+    , $esl.behavior_data.detention
 FROM  
     $esl.behavior_data
 	LEFT JOIN course ON $esl.behavior_data.ref_course_id = course.id
@@ -98,6 +105,7 @@ ORDER BY
     , student.id
     , course_name
     , class_name
+    , create_date
 "
         , comboBoxEx1.Text
         , comboBoxEx2.Text
@@ -116,7 +124,16 @@ ORDER BY
 
                     row.CreateCells(dataGridViewX1);
 
+
+                    //Jean 暫改
                     row.Tag = dr["uid"];
+                    BehaviorRecord behaviorRecord = new BehaviorRecord();
+                    behaviorRecord.UID = "" + dr["uid"];
+                    behaviorRecord.Comment = "" + dr["comment"];
+                    behaviorRecord.IsGood = "" + dr["is_good_behavior"].ToString() == "true";
+                    behaviorRecord.IsDentetion = dr["detention"].ToString() == "true";
+
+
                     int i = 0;
                     row.Cells[i++].Value = "" + dr["class_name"];
                     row.Cells[i++].Value = "" + dr["seat_no"];
@@ -127,13 +144,17 @@ ORDER BY
                     row.Cells[i++].Value = "" + dr["teacher_name"];
                     row.Cells[i++].Value = DateTime.Parse("" + dr["create_date"]).ToShortDateString(); ;
                     row.Cells[i++].Value = "" + dr["comment"];
+                    row.Cells[i++].Value = dr["is_good_behavior"].ToString() == "true";
+                    row.Cells[i++].Value = dr["detention"].ToString() == "true";
                     row.Cells[i - 1].ToolTipText = "" + dr["comment"];
 
                     dataGridViewX1.Rows.Add(row);
 
 
                     // 建立原本資訊的字典，作為對照用
-                    oriCommentDict.Add("" + dr["uid"], "" + dr["comment"]);
+                    //  oriCommentDict.Add("" + dr["uid"], "" + dr["comment"]);
+                    _DicOriBehaviorRecord.Add("" + dr["uid"], behaviorRecord);
+
 
                 }
             }
@@ -220,22 +241,33 @@ ORDER BY
             foreach (DataGridViewRow row in dataGridViewX1.Rows)
             {
                 // 存放於原本字典有的東西，但是後來內容改變， 為update 內容。
-                if (oriCommentDict.ContainsKey("" + row.Tag) && !row.IsNewRow)
+                if (_DicOriBehaviorRecord.ContainsKey("" + row.Tag) && !row.IsNewRow)
                 {
-                    if (oriCommentDict["" + row.Tag] != "" + row.Cells[8].Value)
+                    //如果有變更
+                    if (_DicOriBehaviorRecord["" + row.Tag].Comment != "" + row.Cells[8].Value || _DicOriBehaviorRecord["" + row.Tag].IsGood .ToString()!= "" + row.Cells[9].Value || _DicOriBehaviorRecord["" + row.Tag].IsDentetion.ToString() != "" + row.Cells[10].Value)
                     {
-                        updateLogList.Add(@"已將時間:「" + row.Cells[7].Value + "」" +
+                        if ((Boolean)row.Cells[9].Value  == true &&  (Boolean)row.Cells[10].Value == true )
+                        {
+                            MsgBox.Show("Good 和 Detention 不可同時勾選");
+                            return;
+                        }
+
+                            updateLogList.Add(@"已將時間:「" + row.Cells[7].Value + "」" +
                             ",課程:「" + row.Cells[5].Value + "」" +
                             ",教師:「" + row.Cells[6].Value + "」" +
                             "給學生:「" + row.Cells[3].Value + "」的Comment由「" +
-                            oriCommentDict["" + row.Tag] + "」修改為:「" + row.Cells[8].Value + "」");
+                            _DicOriBehaviorRecord["" + row.Tag].Comment + "」修改為:「" + row.Cells[8].Value + "」"+
+                            _DicOriBehaviorRecord["" + row.Tag] .IsGood+ "」修改為:「" + row.Cells[9].Value + "」"+
+                            _DicOriBehaviorRecord["" + row.Tag] .IsDentetion+ "」修改為:「" + row.Cells[10].Value + "」");
 
                         string updatedata = string.Format(@"
         SELECT
             {0} :: BIGINT AS uid
-            ,'{1}':: TEXT AS comment        
+            ,'{1}':: TEXT AS comment
+            , {2} ::BOOLEAN AS is_good_behavior
+            , {3} ::BOOLEAN AS detention 
              ,'UPDATE' :: TEXT AS action
-                  ", row.Tag, row.Cells[8].Value);
+                  ", row.Tag, row.Cells[8].Value, row.Cells[9].Value, row.Cells[10].Value);
 
                         rawdataList.Add(updatedata);
                     }
@@ -253,9 +285,11 @@ ORDER BY
     -- 更新
     Update $esl.behavior_data
     SET
-        comment = raw_data.comment       
+        comment = raw_data.comment  
+        , is_good_behavior = raw_data.is_good_behavior
+        , detention = raw_data.detention
     FROM 
-        raw_data    
+        raw_data
     WHERE $esl.behavior_data.uid = raw_data.uid  
         AND raw_data.action ='UPDATE'
     RETURNING  $esl.behavior_data.* 
@@ -302,30 +336,60 @@ VALUES ('{0}'::TEXT
 
         }
 
-        private void dataGridViewX1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-            dataGridViewX1.EndEdit();
-            dataGridViewX1.BeginEdit(false);
-            bool hasChange = false;
-            foreach (DataGridViewRow row in dataGridViewX1.Rows)
-            {
-                if((""+row.Cells[8].Value) != oriCommentDict["" + row.Tag])
-                {
-                    hasChange = true;
-                    row.Cells[8].Style.BackColor = Color.LightPink;
-                }
-                else
-                {
-                    row.Cells[8].Style.BackColor = Color.White;
-                }
-            }
-            this.buttonX4.Enabled = hasChange;
-        }
-
+     
         private void dataGridViewX1_Enter(object sender, EventArgs e)
         {
             this.ImeMode = ImeMode.Close;
             this.ImeModeBase = ImeMode.Off;
+        }
+
+        /// <summary>
+        /// 檢查欄位是否變更，若變更 顏色提示  
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataGridViewX1_CurrentCellDirtyStateChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            dataGridViewX1.EndEdit();
+            dataGridViewX1.BeginEdit(false);
+            bool hasChange = false;
+            DataGridViewRow row = dataGridViewX1.Rows[e.RowIndex];
+           
+            //foreach (DataGridViewRow row in dataGridViewX1.Rows)
+
+            //檢查是否變更 comment 是否變更
+            if (("" + row.Cells[e.ColumnIndex].Value) != _DicOriBehaviorRecord["" + row.Tag].Comment)
+                {
+                    hasChange = true;
+                    row.Cells[e.ColumnIndex].Style.BackColor = Color.LightPink;
+                }
+                else
+                {
+                    row.Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                }
+
+                //檢查 Good 欄位 是否變更
+                if (("" + row.Cells[e.ColumnIndex].Value) != _DicOriBehaviorRecord["" + row.Tag].IsGood.ToString())
+                {
+                    hasChange = true;
+                    row.Cells[e.ColumnIndex].Style.BackColor = Color.LightPink;
+                }
+                else
+                {
+                    row.Cells[e.ColumnIndex].Style.BackColor = Color.White;
+                }
+                // 檢查 Detention 欄位 是否變更
+                if (("" + row.Cells[e.ColumnIndex].Value) != _DicOriBehaviorRecord["" + row.Tag].IsDentetion.ToString())
+                {
+                    hasChange = true;
+                    row.Cells[e.ColumnIndex].Style.BackColor = Color.LightPink;
+                }
+                else
+                {
+                    row.Cells[10].Style.BackColor = Color.White;
+                }
+         
+            this.buttonX4.Enabled = hasChange;
         }
     }
 }

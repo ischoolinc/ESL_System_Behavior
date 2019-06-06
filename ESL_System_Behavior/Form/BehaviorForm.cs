@@ -18,8 +18,6 @@ namespace ESL_System_Behavior.Form
     public partial class BehaviorForm : BaseForm
     {
         private StudentRecord _Student;
-        private string _SchoolYear;
-        private string _SchoolSemester;
         private BackgroundWorker BGW = new BackgroundWorker();
         private QueryHelper _Qh;
         private BehaviorRecord _BehaviorRecord;
@@ -31,7 +29,6 @@ namespace ESL_System_Behavior.Form
         public BehaviorForm()
         {
             InitializeComponent();
-
         }
         //新增
         public BehaviorForm(string studentID ,bool editable)
@@ -62,10 +59,7 @@ namespace ESL_System_Behavior.Form
         private void BehaviorForm_Load(object sender, System.EventArgs e)
         {
             _Student = Student.SelectByID(this._BehaviorRecord.StudentID); //取得 學生資訊(log用)
-            //載入BGW
-            BGW.DoWork += new DoWorkEventHandler(BGW_DoWork);
-            BGW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BGW_RunWorkerCompleted);
-
+       
             _Qh = new QueryHelper();
 
             _DicCourseInfo = new Dictionary<string, string>(); //課程資訊使用<課程名稱,id>
@@ -74,65 +68,19 @@ namespace ESL_System_Behavior.Form
             this.dateTimeCreateDate.Value = DateTime.Now; //登錄時間不能變更
             this.dateTimeCreateDate.Enabled = false;  //登錄時間不能變更
 
-            //載入學年度學期 為了select 課程資訊
-            _SchoolYear = School.DefaultSchoolYear;
-            _SchoolSemester = School.DefaultSemester;
-
-            //開始跑BGW
-            BGW.RunWorkerAsync();
+            LoadInfo();
         }
-
-        void BGW_DoWork(object sender, DoWorkEventArgs e)
-        {
-            #region 取得該學生當學期課程
-            String queryCourse = @"
-SELECT
-	sc_attend.ref_course_id 
-	 , course.course_name
-	 ,  ref_student_id
-FROM
-	sc_attend 
-LEFT JOIN
-  course
-     ON course.id = sc_attend.ref_course_id
-WHERE 
- 	ref_student_id = {0}
-	AND course.school_year = {1}
-	AND course.semester = {2}
-";
-
-            queryCourse = String.Format(queryCourse, _BehaviorRecord.StudentID, this._SchoolYear, this._SchoolSemester);
-
-            //取得課程
-            DataTable courses = _Qh.Select(queryCourse);
-            foreach (DataRow courseInfo in courses.Rows)
-            {
-                _DicCourseInfo.Add(courseInfo.Field<string>("course_name"), courseInfo.Field<string>("ref_course_id"));
-            } 
-            #endregion
-        }
-
-        void BGW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+      /// <summary>
+      /// 載入畫面
+      /// </summary>
+       private void LoadInfo()
         {
             #region 填入<新增>的畫面
             if (this._Action == "新增")
             {
+                comboBoxCourse.Enabled = false;
                 dateTimeCreateDate.Value = DateTime.Now;
-                //載入課程
-                comboBoxCourse.Items.Add("");
-                foreach (string courseId in _DicCourseInfo.Keys)
-                {
-                    if (!String.IsNullOrEmpty(courseId))
-                    {
-                        comboBoxCourse.Items.Add(courseId);
-                    }
-                }
-                ////加入原本課程
-                //if (!comboBoxCourse.Items.Contains(this._BehaviorRecord.Course != null ? this._BehaviorRecord.Course : ""))
-                //{
-                //    comboBoxCourse.Items.Add(this._BehaviorRecord.Course);
-                //}
-                //comboBoxCourse.SelectedItem = this._BehaviorRecord.Course;//顯示遠本課程
+
             } 
             #endregion
 
@@ -141,17 +89,7 @@ WHERE
                 dateTimeCreateDate.Value = DateTime.Parse(_BehaviorRecord.CreateDate);//填入日期
                 textBoxTeacher.Text = _BehaviorRecord.Teacher; //填入老師
                 textBoxComment.Text = _BehaviorRecord.Comment; //填入事由
-
-                //載入課程combox
-                //comboBoxCourse.Items.Add("");// 有可能沒有值
-                //foreach (string courseId in _DicCourseInfo.Keys)
-                //{
-                //    if (!String.IsNullOrEmpty(courseId))
-                //    {
-                //        comboBoxCourse.Items.Add(courseId);
-                //    }
-                //}
-                comboBoxCourse.Items.Add(this._BehaviorRecord.Course);
+                comboBoxCourse.Items.Add(this._BehaviorRecord.Course); //裝入課程
                 comboBoxCourse.SelectedIndex = 0;//顯示遠本課程
                 this.comboBoxCourse.Enabled = false; //修改不給修改課程
             }
@@ -249,10 +187,9 @@ UPDATE
 		$esl.behavior_data
 SET 
 		comment = '{2}'
-		, ref_course_id = {3}
 		, last_update  = now()
-  	    , is_good_behavior = {4}
-		, detention = {5}
+  	    , is_good_behavior = {3}
+		, detention = {4}
         
 WHERE  
        uid = {0}
@@ -266,7 +203,6 @@ RETURNING *
                                                 this._BehaviorRecord.UID
                                                 , this._BehaviorRecord.StudentID
                                                 , this._BehaviorRecord.Comment
-                                                , this._BehaviorRecord.Course != null && this._BehaviorRecord.Course != "" ? _DicCourseInfo[this._BehaviorRecord.Course] : "null"
                                                 , this._BehaviorRecord.IsGood
                                                 , this._BehaviorRecord.IsDentetion
                                                 );
