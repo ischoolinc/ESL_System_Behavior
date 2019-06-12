@@ -159,14 +159,14 @@ namespace ESL_System_Behavior.Form
                             this.buttonX4.Enabled = true;
                             return;
                         }
-
                         updateLogList.Add(@"已將時間:「" + row.Cells[7].Value + "」" +
                         ",課程:「" + row.Cells[5].Value + "」" +
                         ",教師:「" + row.Cells[6].Value + "」" +
-                        "給學生:「" + row.Cells[3].Value + "」的 Comment由「" +
+                        "給學生:「" + row.Cells[3].Value + "」的 \n"+"Comment: 由「" +
                         _DicOriBehaviorRecord["" + row.Tag].Comment + "」修改為:「" + row.Cells[8].Value + "」 \n" +
-                        "Good  由 「" + _DicOriBehaviorRecord["" + row.Tag].IsGood + "」修改為:「" + row.Cells[9].Value + "」 \n" +
-                        "Detention 由 「" + _DicOriBehaviorRecord["" + row.Tag].IsDentetion + "」修改為:「" + row.Cells[10].Value + "」 \n");
+                        "Good: 由「" + _DicOriBehaviorRecord["" + row.Tag].IsGood + "」修改為:「" + row.Cells[9].Value + "」 \n" +
+                        "Detention: 由「" + _DicOriBehaviorRecord["" + row.Tag].IsDentetion + "」修改為:「" + row.Cells[10].Value + "」 \n"+
+                        "------------------------------------------------------------------------------- \n");
 
                         string updatedata = string.Format(@"
         SELECT
@@ -231,7 +231,7 @@ VALUES ('{0}'::TEXT
 	, now() 
 , '{1}' 
 	, '設定'
-, '檢視教師Behavior輸入。修正:{2}' 
+, '檢視教師Behavior輸入。修改:{2} ' 
 )", _actor, _client_info, nowComment);
 
 
@@ -255,75 +255,18 @@ VALUES ('{0}'::TEXT
 
         private void dataGridViewX1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-
-
             if (e.RowIndex != -1)
             {
-
-                CheckIsRowUpateD();
-                //    bool hasChange = false;
-                //    DataGridViewRow row = dataGridViewX1.Rows[e.RowIndex];
-                //    if (e.ColumnIndex == 9)
-                //    {
-                //        //檢查 Good 欄位 是否變更
-                //        if (((Boolean)row.Cells[e.ColumnIndex].Value) != _DicOriBehaviorRecord["" + row.Tag].IsGood)
-                //        {
-                //            //hasChange = true;
-                //            // 若有變更就加入
-                //            this._ListUpdateTarget.Add(row.Tag.ToString());
-                //            row.Cells[e.ColumnIndex].Style.BackColor = Color.LightPink;
-                //        }
-                //        else
-                //        {
-                //            row.Cells[e.ColumnIndex].Style.BackColor = Color.White;
-                //            this._ListUpdateTarget.Remove(row.Tag.ToString());
-                //        }
-
-                //    }
-                //    else if (e.ColumnIndex == 10)
-                //    { // 檢查Detention 是否有修改
-                //        if (((Boolean)row.Cells[e.ColumnIndex].Value) != _DicOriBehaviorRecord["" + row.Tag].IsDentetion)
-                //        {
-                //            hasChange = true;
-                //            this._ListUpdateTarget.Add(row.Tag.ToString());
-                //            row.Cells[e.ColumnIndex].Style.BackColor = Color.LightPink;
-                //        }
-                //        else
-                //        {
-                //            row.Cells[10].Style.BackColor = Color.White;
-                //            this._ListUpdateTarget.Remove(row.Tag.ToString());
-                //        }
-                //    }
-                //    this.buttonX4.Enabled = _ListUpdateTarget.Count() > 0;
+                CheckIsRowUpated();
             }
         }
 
 
-        private void dataGridViewX1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+
+        //針對 comment 欄位修改
+        private void dataGridViewX1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            //int rowindex=dataGridViewX1.CurrentCell.RowIndex;
-            //DataGridViewRow row = dataGridViewX1.Rows[rowindex];
-            dataGridViewX1.EndEdit();
-            dataGridViewX1.BeginEdit(false);
-            ////bool hasChange = false;
-            ////針對commmet 欄位做 驗證
-
-            //    if (("" + row.Cells[8].Value) != _DicOriBehaviorRecord["" + row.Tag].Comment)
-            //    {
-            //        //hasChange = true;
-            //        this._ListUpdateTarget.Add(row.Tag.ToString());
-            //        row.Cells[8].Style.BackColor = Color.LightPink;
-            //    }
-            //    else
-            //    { 
-            //        row.Cells[8].Style.BackColor = Color.White;
-            //        if(_ListUpdateTarget.Contains(row.Tag.ToString()))
-            //        this._ListUpdateTarget.Remove(row.Tag.ToString());
-            //    }
-
-            //this.buttonX4.Enabled = _ListUpdateTarget.Count()> 0 ;
-
-            CheckIsRowUpateD();
+            CheckIsRowUpated();
         }
 
         /// <summary>
@@ -333,6 +276,7 @@ VALUES ('{0}'::TEXT
         {
             _DicOriBehaviorRecord.Clear();
             dataGridViewX1.Rows.Clear();
+            _ListUpdateTarget.Clear();
 
             string query = string.Format(@"
 SELECT  
@@ -413,45 +357,62 @@ ORDER BY
                     // 建立原本資訊的字典，作為對照用
                     //  oriCommentDict.Add("" + dr["uid"], "" + dr["comment"]);
                     _DicOriBehaviorRecord.Add("" + dr["uid"], behaviorRecord);
-
                 }
             }
         }
 
 
         /// <summary>
-        /// 確認當列資料是否修改
+        /// 確認當列資料是否修改 有修改就 改變cell背景顏色  並將 列欄位加入List
         /// </summary>
-        private void CheckIsRowUpateD()
+        private void CheckIsRowUpated()
         {
             DataGridViewRow row = this.dataGridViewX1.CurrentRow;//去得當前的Row
             string rowID = dataGridViewX1.CurrentRow.Tag.ToString();//取的當前的row id 
+
+            if (dataGridViewX1.CurrentCell.Value == null) //如果為空值 跳出提醒
+            {
+                dataGridViewX1.CurrentCell.ErrorText = "不可為空白";
+               
+                return;
+            }
+            else
+            {
+                if (String.IsNullOrWhiteSpace("" + dataGridViewX1.CurrentCell.Value))
+                {
+                    dataGridViewX1.CurrentCell.ErrorText = "不可為空白";
+                  
+                    return;
+                }
+
+                dataGridViewX1.CurrentCell.ErrorText = null;
+           
+            }
+            //如果修改為欄為 8( comment)
             if (dataGridViewX1.CurrentCell.ColumnIndex == 8)
             {
                 if (dataGridViewX1.CurrentCell.Value.ToString() != this._DicOriBehaviorRecord["" + row.Tag].Comment)
                 {
                     dataGridViewX1.CurrentCell.Style.BackColor = Color.LightPink;
-
                 }
                 else
                 {
                     dataGridViewX1.CurrentCell.Style.BackColor = Color.White;
                 }
 
-            }
+            } //如果修改欄為 9 ( Good )
             else if (dataGridViewX1.CurrentCell.ColumnIndex == 9)
             {
                 if ((Boolean)dataGridViewX1.CurrentCell.Value != this._DicOriBehaviorRecord["" + row.Tag].IsGood)
                 {
                     dataGridViewX1.CurrentCell.Style.BackColor = Color.LightPink;
-
                 }
                 else
                 {
                     dataGridViewX1.CurrentCell.Style.BackColor = Color.White;
                 }
 
-            }
+            } //如果修改欄為 10 (Detention)
             else if (dataGridViewX1.CurrentCell.ColumnIndex == 10)
             {
                 if ((Boolean)dataGridViewX1.CurrentCell.Value != this._DicOriBehaviorRecord["" + row.Tag].IsDentetion)
@@ -465,19 +426,25 @@ ORDER BY
 
             }
 
+            //加入有修改列數
             if ("" + row.Cells[8].Value != _DicOriBehaviorRecord["" + row.Tag].Comment || (Boolean)row.Cells[9].Value != _DicOriBehaviorRecord["" + row.Tag].IsGood || (Boolean)row.Cells[10].Value != _DicOriBehaviorRecord["" + row.Tag].IsDentetion)
             {
-                _ListUpdateTarget.Add(rowID);
-           
+                if (!_ListUpdateTarget.Contains(rowID))
+                     _ListUpdateTarget.Add(rowID);
             }
             else
             {
                 if (_ListUpdateTarget.Contains(rowID))
                     _ListUpdateTarget.Remove(rowID);
-               
             }
             if (this._ListUpdateTarget.Count() > 0)
                 this.buttonX4.Enabled = true;
+            else
+            {
+
+                this.buttonX4.Enabled = false;
+            }
+
         }
     }
 }

@@ -105,6 +105,12 @@ namespace ESL_System_Behavior.Form
             btnSave.Enabled = false;
             Boolean isPass = ValidateValue();//驗證必填欄位
 
+            if (chexkBoxDetention.Checked && CheckboxＧoodBehavior.Checked)
+            {
+                MsgBox.Show("Good 和 Detention 不可同時勾選");
+                btnSave.Enabled = true;
+                return;
+            }
             //如果驗證沒過就出去
             if (!isPass)
             {
@@ -146,7 +152,7 @@ RETURNING *
                 insertSql = String.Format(insertSql
                                          , this._BehaviorRecord.StudentID
                                          , this._BehaviorRecord.CourseID != null ? this._BehaviorRecord.CourseID : "null"
-                                         , this._BehaviorRecord.Comment
+                                         , this._BehaviorRecord.Comment.Replace("'", "''")
                                          , this._BehaviorRecord.IsGood
                                          , this._BehaviorRecord.IsDentetion);
                                          
@@ -202,7 +208,7 @@ RETURNING *
                                                 updateSql,
                                                 this._BehaviorRecord.UID
                                                 , this._BehaviorRecord.StudentID
-                                                , this._BehaviorRecord.Comment
+                                                , this._BehaviorRecord.Comment.Replace("'","''")
                                                 , this._BehaviorRecord.IsGood
                                                 , this._BehaviorRecord.IsDentetion
                                                 );

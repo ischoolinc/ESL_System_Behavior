@@ -225,7 +225,7 @@
             // 
             this.chexkBoxDetention.BackgroundStyle.Class = "";
             this.chexkBoxDetention.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.chexkBoxDetention.Location = new System.Drawing.Point(208, 104);
+            this.chexkBoxDetention.Location = new System.Drawing.Point(254, 104);
             this.chexkBoxDetention.Name = "chexkBoxDetention";
             this.chexkBoxDetention.Size = new System.Drawing.Size(93, 23);
             this.chexkBoxDetention.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -240,12 +240,12 @@
             // 
             this.CheckboxＧoodBehavior.BackgroundStyle.Class = "";
             this.CheckboxＧoodBehavior.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.CheckboxＧoodBehavior.Location = new System.Drawing.Point(307, 104);
+            this.CheckboxＧoodBehavior.Location = new System.Drawing.Point(353, 104);
             this.CheckboxＧoodBehavior.Name = "CheckboxＧoodBehavior";
-            this.CheckboxＧoodBehavior.Size = new System.Drawing.Size(121, 23);
+            this.CheckboxＧoodBehavior.Size = new System.Drawing.Size(75, 23);
             this.CheckboxＧoodBehavior.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.CheckboxＧoodBehavior.TabIndex = 12;
-            this.CheckboxＧoodBehavior.Text = "Good Behavior";
+            this.CheckboxＧoodBehavior.Text = "Good";
             // 
             // BehaviorForm
             // 
