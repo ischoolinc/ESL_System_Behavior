@@ -71,8 +71,12 @@ namespace ESL_System_Behavior
 
                 MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Click += delegate
                 {
-                    Form.ViewWeeklyReportForm vwrf = new Form.ViewWeeklyReportForm();
+                    // 2019/09/12 穎驊修改， 因新竹康橋 WeeklyReport改用 電子報表發送， 
+                    //接下來的情境 將不再看WeeklyReport改用 is_send 發送與否， 而是透過後端 檢查是否教師有建立
+                    //Form.ViewWeeklyReportForm vwrf = new Form.ViewWeeklyReportForm();
+                    //vwrf.ShowDialog();
 
+                    Form.ViewWeeklyReportFormAllESLCourse vwrf = new Form.ViewWeeklyReportFormAllESLCourse();
                     vwrf.ShowDialog();
 
                 };

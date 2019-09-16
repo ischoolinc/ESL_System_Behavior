@@ -21,3 +21,6 @@ ESL_System_Behavior/obj/Debug/ESL_System_Behavior.Form.ViewBehaviorInputForm.res
 ESL_System_Behavior/obj/Debug/ESLSystemBehavior.csproj.FileListAbsolute.txt
 ESL_System_Behavior/obj/Debug/ESLSystemBehavior.csproj.GenerateResource.Cache
 ESL_System_Behavior/obj/Debug/ESLSystemBehavior.csprojResolveAssemblyReference.cache
+ESL_System_Behavior/obj/Debug/ESL_System_Behavior.BehaviorItem.resources
+ESL_System_Behavior/obj/Debug/ESL_System_Behavior.Form.ViewWeeklyReportFormAllESLCourse.resources
+ESL_System_Behavior/obj/Debug/ESL_System_Behavior.Form.BehaviorForm.resources

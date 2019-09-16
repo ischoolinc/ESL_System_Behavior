@@ -333,6 +333,9 @@ VALUES ('{0}'::TEXT
 
             MsgBox.Show("儲存設定成功。");
 
+            // 儲存成功 關閉視窗
+            this.Close();
+
         }
 
         // 取消

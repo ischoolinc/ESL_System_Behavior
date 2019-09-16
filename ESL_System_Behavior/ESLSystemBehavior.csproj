@@ -115,6 +115,7 @@
     <Compile Include="BehaviorItem.Designer.cs">
       <DependentUpon>BehaviorItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="WeeklyReportLogRecord.cs" />
     <Compile Include="BehaviorRecord.cs" />
     <Compile Include="Form\AbsenceMappingForm.cs">
       <SubType>Form</SubType>
@@ -134,11 +135,17 @@
     <Compile Include="Form\ViewBehaviorInputForm.Designer.cs">
       <DependentUpon>ViewBehaviorInputForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\ViewWeeklyReportForm.cs.cs">
+    <Compile Include="Form\ViewWeeklyReportFormAllESLCourse.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\ViewWeeklyReportForm.cs.Designer.cs">
-      <DependentUpon>ViewWeeklyReportForm.cs.cs</DependentUpon>
+    <Compile Include="Form\ViewWeeklyReportFormAllESLCourse.Designer.cs">
+      <DependentUpon>ViewWeeklyReportFormAllESLCourse.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\ViewWeeklyReportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\ViewWeeklyReportForm.Designer.cs">
+      <DependentUpon>ViewWeeklyReportForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Form\AbsencePeriodMappingForm.cs">
       <SubType>Form</SubType>
@@ -221,8 +228,11 @@
     <EmbeddedResource Include="Form\ViewBehaviorInputForm.resx">
       <DependentUpon>ViewBehaviorInputForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form\ViewWeeklyReportForm.cs.resx">
-      <DependentUpon>ViewWeeklyReportForm.cs.cs</DependentUpon>
+    <EmbeddedResource Include="Form\ViewWeeklyReportFormAllESLCourse.resx">
+      <DependentUpon>ViewWeeklyReportFormAllESLCourse.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\ViewWeeklyReportForm.resx">
+      <DependentUpon>ViewWeeklyReportForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\AbsencePeriodMappingForm.resx">
       <DependentUpon>AbsencePeriodMappingForm.cs</DependentUpon>
