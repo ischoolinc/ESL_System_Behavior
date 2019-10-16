@@ -9,6 +9,10 @@ namespace ESL_System_Behavior
     public class WeeklyReportLogRecord
     {
 
+        /// <summary>
+        /// BeginDate
+        /// </summary>
+        public string BeginDate { get; set; }
 
         /// <summary>
         /// EndDate

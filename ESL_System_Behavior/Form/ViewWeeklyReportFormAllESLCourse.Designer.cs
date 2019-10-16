@@ -43,6 +43,8 @@
             this.labelX5 = new DevComponents.DotNetBar.LabelX();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewX1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dateTimeInput1)).BeginInit();
@@ -55,7 +57,7 @@
             this.buttonX1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonX1.BackColor = System.Drawing.Color.Transparent;
             this.buttonX1.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.buttonX1.Location = new System.Drawing.Point(559, 549);
+            this.buttonX1.Location = new System.Drawing.Point(788, 549);
             this.buttonX1.Name = "buttonX1";
             this.buttonX1.Size = new System.Drawing.Size(75, 23);
             this.buttonX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -69,7 +71,7 @@
             this.buttonX2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonX2.BackColor = System.Drawing.Color.Transparent;
             this.buttonX2.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.buttonX2.Location = new System.Drawing.Point(640, 549);
+            this.buttonX2.Location = new System.Drawing.Point(869, 549);
             this.buttonX2.Name = "buttonX2";
             this.buttonX2.Size = new System.Drawing.Size(75, 23);
             this.buttonX2.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -88,6 +90,8 @@
             this.dataGridViewX1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
             this.Column2,
+            this.Column4,
+            this.Column5,
             this.Column3});
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
@@ -103,7 +107,7 @@
             this.dataGridViewX1.ReadOnly = true;
             this.dataGridViewX1.RowTemplate.Height = 24;
             this.dataGridViewX1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridViewX1.Size = new System.Drawing.Size(701, 422);
+            this.dataGridViewX1.Size = new System.Drawing.Size(930, 422);
             this.dataGridViewX1.TabIndex = 2;
             // 
             // labelX1
@@ -320,6 +324,18 @@
             this.Column2.Name = "Column2";
             this.Column2.ReadOnly = true;
             // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "開始日期";
+            this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
+            // 
+            // Column5
+            // 
+            this.Column5.HeaderText = "結束日期";
+            this.Column5.Name = "Column5";
+            this.Column5.ReadOnly = true;
+            // 
             // Column3
             // 
             this.Column3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -331,7 +347,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(727, 584);
+            this.ClientSize = new System.Drawing.Size(956, 584);
             this.Controls.Add(this.labelX5);
             this.Controls.Add(this.labelX4);
             this.Controls.Add(this.dateTimeInput2);
@@ -372,6 +388,8 @@
         private DevComponents.DotNetBar.LabelX labelX5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
     }
 }

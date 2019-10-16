@@ -61,6 +61,7 @@ namespace ESL_System_Behavior.Form
 
 
             dataGridViewX1.Rows.Clear();
+            WeeklyReportLogDict.Clear();
 
             // 選出套用ESL樣板的課程 檢查時間區段裡 老師是否有建立weekly_report
 
@@ -73,6 +74,7 @@ namespace ESL_System_Behavior.Form
 	                                        ,tc_instruct.sequence
                                             ,exam_template.id AS templateID
                                             ,exam_template.name AS templateName
+                                            ,$esl.weekly_report.begin_date
 	                                        ,$esl.weekly_report.end_date
                                         FROM course 
                                         LEFT JOIN  exam_template ON course.ref_exam_template_id =exam_template.id  
@@ -98,7 +100,10 @@ namespace ESL_System_Behavior.Form
 
                         lr.CourseID = "" + dr["course_id"];
                         lr.CourseName = "" + dr["course_name"];
-                        lr.EndDate = "" + dr["end_date"];
+
+                        lr.BeginDate = "" + dr["begin_date"]!="" ? DateTime.Parse("" + dr["begin_date"]).ToString("yyyy/MM/dd"):"" ;
+                        lr.EndDate = "" + dr["end_date"] != "" ? DateTime.Parse("" + dr["end_date"]).ToString("yyyy/MM/dd") :"";
+
                         lr.TeacherID = "" + dr["teacher_id"];
                         lr.TeacherName = "" + dr["teacher_name"];
 
@@ -130,7 +135,9 @@ namespace ESL_System_Behavior.Form
 
                     row.Cells[0].Value = WeeklyReportLogDict[key].CourseName;
                     row.Cells[1].Value = WeeklyReportLogDict[key].TeacherName;
-                    row.Cells[2].Value = WeeklyReportLogDict[key].WeeklyReportCount == 0 ? "本周尚未建立" : "本周已建立" + WeeklyReportLogDict[key].WeeklyReportCount + "筆";
+                    row.Cells[2].Value = WeeklyReportLogDict[key].BeginDate;
+                    row.Cells[3].Value = WeeklyReportLogDict[key].EndDate;
+                    row.Cells[4].Value = WeeklyReportLogDict[key].WeeklyReportCount == 0 ? "本周尚未建立" : "本周已建立" + WeeklyReportLogDict[key].WeeklyReportCount + "筆";
 
                     // 如果沒有建立 標紅色
                     if (WeeklyReportLogDict[key].WeeklyReportCount == 0)
@@ -139,7 +146,7 @@ namespace ESL_System_Behavior.Form
 
                         s.ForeColor = Color.Red;
 
-                        row.Cells[2].Style = s;
+                        row.Cells[4].Style = s;
                     }
 
                     dataGridViewX1.Rows.Add(row);
