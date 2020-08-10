@@ -115,6 +115,14 @@
     <Compile Include="BehaviorItem.Designer.cs">
       <DependentUpon>BehaviorItem.cs</DependentUpon>
     </Compile>
+    <Compile Include="DAO\BehaviorInfo.cs" />
+    <Compile Include="DAO\WeeklyDataInfo.cs" />
+    <Compile Include="Form\EditWeeklyDataForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\EditWeeklyDataForm.Designer.cs">
+      <DependentUpon>EditWeeklyDataForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="WeeklyReportLogRecord.cs" />
     <Compile Include="BehaviorRecord.cs" />
     <Compile Include="Form\AbsenceMappingForm.cs">
@@ -224,6 +232,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form\BehaviorForm.resx">
       <DependentUpon>BehaviorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\EditWeeklyDataForm.resx">
+      <DependentUpon>EditWeeklyDataForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\ViewBehaviorInputForm.resx">
       <DependentUpon>ViewBehaviorInputForm.cs</DependentUpon>

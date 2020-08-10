@@ -9,6 +9,13 @@ namespace ESL_System_Behavior
     public class WeeklyReportLogRecord
     {
 
+        public string UID { get; set; }
+
+        /// <summary>
+        /// 辨識該筆 Row 
+        /// </summary>
+        public string RowKey { get; set; }
+
         /// <summary>
         /// BeginDate
         /// </summary>
@@ -43,6 +50,9 @@ namespace ESL_System_Behavior
         /// WeeklyReportCount
         /// </summary>
         public int WeeklyReportCount { get; set; } // 本周建立筆數
+
+
+        public string GeneralComment { get; set; }
 
     }
 }
