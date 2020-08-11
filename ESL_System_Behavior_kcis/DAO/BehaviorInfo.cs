@@ -23,10 +23,10 @@ namespace ESL_System_Behavior
         public string CreateDate { get; set; }
 
 
-        public string isDetention { get; set; }
+        public bool isDetention { get; set; }
 
 
-        public string isGood { get; set; }
+        public bool isGood { get; set; }
 
 
         public string Comment { get; set; }

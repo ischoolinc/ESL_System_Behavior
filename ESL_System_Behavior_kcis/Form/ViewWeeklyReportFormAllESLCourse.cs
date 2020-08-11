@@ -15,7 +15,7 @@ using K12.Data;
 using System.Xml;
 using FISCA.Authentication;
 using FISCA.LogAgent;
-using K12.Data;
+
 
 namespace ESL_System_Behavior.Form
 {
@@ -95,7 +95,7 @@ namespace ESL_System_Behavior.Form
                                         AND course.school_year = '{0}' 
                                         AND semester = '{1}' 
                                         AND (end_date >= TIMESTAMP '{2}' AND end_date<= TIMESTAMP '{3}' OR end_date IS NULL)
-                                        ORDER BY course_name,sequence", comboBoxEx1.Text, comboBoxEx2.Text, dateTimeInput1.Value.Date.ToShortDateString(), dateTimeInput2.Value.Date.ToShortDateString());
+                                        ORDER BY course_name,sequence,$esl.weekly_report.uid", comboBoxEx1.Text, comboBoxEx2.Text, dateTimeInput1.Value.Date.ToShortDateString(), dateTimeInput2.Value.Date.ToShortDateString());
 
             QueryHelper qh = new QueryHelper();
             DataTable dt = qh.Select(query);
@@ -253,6 +253,11 @@ namespace ESL_System_Behavior.Form
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
+            LoadEditForm();
+        }
+
+        private void LoadEditForm()
+        {
             btnEdit.Enabled = false;
             if (dataGridViewX1.Rows.Count > 0)
             {
@@ -271,10 +276,15 @@ namespace ESL_System_Behavior.Form
                             }
                         }
                     }
-                  
+
                 }
             }
             btnEdit.Enabled = true;
+        }
+
+        private void dataGridViewX1_DoubleClick(object sender, EventArgs e)
+        {
+            LoadEditForm();
         }
     }
 }
