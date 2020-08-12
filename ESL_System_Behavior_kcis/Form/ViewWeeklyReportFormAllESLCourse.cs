@@ -204,13 +204,16 @@ namespace ESL_System_Behavior.Form
                 if (dataGridViewX1.SelectedRows.Count == 1)
                 {
                     List<string> delUID = new List<string>();
+                    WeeklyReportLogRecord ddR = null;
                     if (dataGridViewX1.SelectedRows[0].Tag != null)
                     {
                         string rKey = dataGridViewX1.SelectedRows[0].Tag.ToString();
+
                         if (WeeklyReportDataDict.ContainsKey(rKey))
                         {
                             foreach (WeeklyReportLogRecord rec in WeeklyReportDataDict[rKey])
                             {
+                                ddR = rec;
                                 delUID.Add(rec.UID);
                             }
                         }
@@ -233,7 +236,13 @@ namespace ESL_System_Behavior.Form
                                     UpdateHelper uh = new UpdateHelper();
                                     uh.Execute(sqlList);
 
-                                    // 寫 Log
+                                    if (ddR != null)
+                                    {
+                                        // 寫 Log
+                                        FISCA.LogAgent.ApplicationLog.Log("ESL 檢視週報表", "刪除資料", "course", ddR.CourseID, "刪除 Weekly Report 資料： CourseName:" + ddR.CourseName + ", TeacherName:" + ddR.TeacherName + ", CourseID:" + ddR.CourseID + ", TeacherID:" + ddR.TeacherID + "。");
+                                    }
+
+
                                     MsgBox.Show("刪除完成");
                                     LoadSearchData();
 
@@ -244,7 +253,7 @@ namespace ESL_System_Behavior.Form
                                 }
                             }
                         }
-                    }             
+                    }
                 }
             }
 
@@ -271,8 +280,12 @@ namespace ESL_System_Behavior.Form
                             if (WeeklyReportDataDict[rKey].Count > 0)
                             {
                                 EditWeeklyDataForm wedf = new EditWeeklyDataForm();
-                                wedf.SetWeeklyReportLogRecord(WeeklyReportDataDict[rKey]);
-                                wedf.ShowDialog();
+
+                                if (WeeklyReportDataDict[rKey][0].WeeklyReportCount > 0)
+                                {
+                                    wedf.SetWeeklyReportLogRecord(WeeklyReportDataDict[rKey]);
+                                    wedf.ShowDialog();
+                                }
                             }
                         }
                     }

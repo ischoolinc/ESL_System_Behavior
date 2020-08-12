@@ -19,8 +19,14 @@ namespace ESL_System_Behavior.Form
         List<WeeklyReportLogRecord> WeeklyReportLogRecordList;
         List<WeeklyDataInfo> WeeklyDataInfoList;
         List<BehaviorInfo> BehaviorInfoList;
+
         string SelectedWeeklyReportUID = "";
         string SelectedWeeklyDataUID = "";
+        string SelectdBeginDate = "";
+        string SelectdEndDate = "";
+        string oldGeneralComment = "";
+        string oldTeacherComment = "";
+
 
         public EditWeeklyDataForm()
         {
@@ -69,6 +75,9 @@ namespace ESL_System_Behavior.Form
                 dgWeeklyReport.Rows[0].Selected = true;
                 txtGeneralComment.Text = WeeklyReportLogRecordList[0].GeneralComment;
                 SelectedWeeklyReportUID = WeeklyReportLogRecordList[0].UID;
+                oldGeneralComment = txtGeneralComment.Text;
+                SelectdBeginDate = WeeklyReportLogRecordList[0].BeginDate;
+                SelectdEndDate = WeeklyReportLogRecordList[0].EndDate;
                 LoadLoadWeeklyDataByReportID(WeeklyReportLogRecordList[0]);
             }
         }
@@ -135,6 +144,7 @@ namespace ESL_System_Behavior.Form
                     dgStudentData.Rows[0].Selected = true;
                     txtTeacherComment.Text = WeeklyDataInfoList[0].PersonalComment;
                     SelectedWeeklyDataUID = WeeklyDataInfoList[0].UID;
+                    oldTeacherComment = txtTeacherComment.Text;
                     LoadBehaviorData(WeeklyDataInfoList[0].StudentID, WeeklyDataInfoList[0].CourseID, WeeklyDataInfoList[0].TeacherID);
                 }
             }
@@ -142,61 +152,86 @@ namespace ESL_System_Behavior.Form
 
         private void LoadBehaviorData(string StudentID, string CourseID, string TeacherID)
         {
-            string sql = "SELECT " +
-                "uid" +
-                ",create_date" +
-                ",comment" +
-                ",is_good_behavior" +
-                ",detention " +
-                " FROM $esl.behavior_data" +
-                " WHERE ref_course_id = " + CourseID + " AND ref_student_id = " + StudentID + " AND ref_teacher_id = " + TeacherID + " ORDER BY create_date";
-
-            BehaviorInfoList.Clear();
-            dgBehavior.Rows.Clear();
-
-            QueryHelper qh = new QueryHelper();
-            DataTable dt = qh.Select(sql);
-            if (dt != null)
+            try
             {
-                foreach (DataRow dr in dt.Rows)
+                if (string.IsNullOrEmpty(SelectdBeginDate))
                 {
-                    BehaviorInfo bi = new BehaviorInfo();
-                    bi.Comment = "" + dr["comment"];
-                    bi.CourseID = CourseID;
-                    bi.UID = "" + dr["uid"];
-                    bi.isGood = false;
-                    bi.isDetention = false;
-                    bi.CreateDate = "" + dr["create_date"] != "" ? DateTime.Parse("" + dr["create_date"]).ToString("yyyy/MM/dd") : "";
-                    if ("" + dr["is_good_behavior"] == "true")
+                    SelectdBeginDate = DateTime.Now.ToString("yyyy-MM-dd");
+                }
+                if (string.IsNullOrEmpty(SelectdEndDate))
+                {
+                    SelectdEndDate = DateTime.Now.ToString("yyyy-MM-dd");
+                }
+
+                SelectdBeginDate = DateTime.Parse(SelectdBeginDate).ToString("yyyy-MM-dd");
+                SelectdEndDate = DateTime.Parse(SelectdEndDate).ToString("yyyy-MM-dd");
+
+                string sql = "SELECT " +
+                    "uid" +
+                    ",create_date" +
+                    ",comment" +
+                    ",is_good_behavior" +
+                    ",detention " +
+                    " FROM $esl.behavior_data" +
+                    " WHERE ref_course_id = " + CourseID + "" +
+                    " AND ref_student_id = " + StudentID + "" +
+                    " AND ref_teacher_id = " + TeacherID + "" +
+                    " AND create_date >= '" + SelectdBeginDate + "'" +
+                    " AND create_date <= '" + SelectdEndDate + "'" +
+                    " ORDER BY create_date";
+
+                BehaviorInfoList.Clear();
+                dgBehavior.Rows.Clear();
+
+                QueryHelper qh = new QueryHelper();
+                DataTable dt = qh.Select(sql);
+                if (dt != null)
+                {
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        bi.isGood = true;
+                        BehaviorInfo bi = new BehaviorInfo();
+                        bi.Comment = "" + dr["comment"];
+                        bi.CourseID = CourseID;
+                        bi.UID = "" + dr["uid"];
+                        bi.isGood = false;
+                        bi.isDetention = false;
+                        bi.CreateDate = "" + dr["create_date"] != "" ? DateTime.Parse("" + dr["create_date"]).ToString("yyyy/MM/dd") : "";
+                        if ("" + dr["is_good_behavior"] == "true")
+                        {
+                            bi.isGood = true;
+                        }
+                        if ("" + dr["detention"] == "true")
+                        {
+                            bi.isDetention = true;
+                        }
+                        bi.TeacherID = TeacherID;
+                        bi.StudentID = StudentID;
+                        BehaviorInfoList.Add(bi);
                     }
-                    if ("" + dr["detention"] == "true")
-                    {
-                        bi.isDetention = true;
-                    }
-                    bi.TeacherID = TeacherID;
-                    bi.StudentID = StudentID;
-                    BehaviorInfoList.Add(bi);
+                }
+
+                foreach (BehaviorInfo bi in BehaviorInfoList)
+                {
+                    int rowIdx = dgBehavior.Rows.Add();
+                    dgBehavior.Rows[rowIdx].Tag = bi;
+                    dgBehavior.Rows[rowIdx].Cells[colBCreateDate.Index].Value = bi.CreateDate;
+                    dgBehavior.Rows[rowIdx].Cells[colBComment.Index].Value = bi.Comment;
+                    dgBehavior.Rows[rowIdx].Cells[colGood.Index].Value = false;
+                    dgBehavior.Rows[rowIdx].Cells[colDetention.Index].Value = false;
+
+                    if (bi.isGood)
+                        dgBehavior.Rows[rowIdx].Cells[colGood.Index].Value = true; ;
+
+                    if (bi.isDetention)
+                        dgBehavior.Rows[rowIdx].Cells[colDetention.Index].Value = true;
+
                 }
             }
-
-            foreach (BehaviorInfo bi in BehaviorInfoList)
+            catch (Exception ex)
             {
-                int rowIdx = dgBehavior.Rows.Add();
-                dgBehavior.Rows[rowIdx].Tag = bi;
-                dgBehavior.Rows[rowIdx].Cells[colBCreateDate.Index].Value = bi.CreateDate;
-                dgBehavior.Rows[rowIdx].Cells[colBComment.Index].Value = bi.Comment;
-                dgBehavior.Rows[rowIdx].Cells[colGood.Index].Value = false;
-                dgBehavior.Rows[rowIdx].Cells[colDetention.Index].Value = false;
-
-                if (bi.isGood)
-                    dgBehavior.Rows[rowIdx].Cells[colGood.Index].Value = true; ;
-
-                if (bi.isDetention)
-                    dgBehavior.Rows[rowIdx].Cells[colDetention.Index].Value = true;
-
+                MessageBox.Show("載入 Behavior 資料失敗," + ex.Message);
             }
+
         }
 
 
@@ -204,6 +239,7 @@ namespace ESL_System_Behavior.Form
         {
             txtGeneralComment.Text = "";
             SelectedWeeklyReportUID = "";
+            SelectdBeginDate = SelectdEndDate = "";
             if (dgWeeklyReport.SelectedRows.Count > 0)
             {
                 WeeklyReportLogRecord rec = dgWeeklyReport.SelectedRows[0].Tag as WeeklyReportLogRecord;
@@ -211,7 +247,11 @@ namespace ESL_System_Behavior.Form
                 {
                     txtGeneralComment.Text = rec.GeneralComment;
                     SelectedWeeklyReportUID = rec.UID;
+                    oldGeneralComment = rec.GeneralComment;
+                    SelectdBeginDate = rec.BeginDate;
+                    SelectdEndDate = rec.EndDate;
                     LoadLoadWeeklyDataByReportID(rec);
+
                 }
             }
         }
@@ -227,6 +267,7 @@ namespace ESL_System_Behavior.Form
                 {
                     txtTeacherComment.Text = wdi.PersonalComment;
                     SelectedWeeklyDataUID = wdi.UID;
+                    oldTeacherComment = txtTeacherComment.Text;
                     LoadBehaviorData(wdi.StudentID, wdi.CourseID, wdi.TeacherID);
                 }
             }
@@ -237,6 +278,7 @@ namespace ESL_System_Behavior.Form
             btnSave.Enabled = false;
             bool chkPass = true;
             List<string> errorMsgList = new List<string>();
+            List<string> logStrList = new List<string>();
             // 檢查資料
             foreach (DataGridViewRow drv in dgBehavior.Rows)
             {
@@ -262,6 +304,11 @@ namespace ESL_System_Behavior.Form
                     string updateGComment = "UPDATE $esl.weekly_report SET general_comment = '" + gComment + "' WHERE uid = " + SelectedWeeklyReportUID + ";";
                     if (!string.IsNullOrWhiteSpace(SelectedWeeklyReportUID))
                     {
+                        if (oldGeneralComment != txtGeneralComment.Text)
+                        {
+                            logStrList.Add("Genner Comment 由「" + oldGeneralComment + "」改成「" + txtGeneralComment.Text + "」。");
+                        }
+
                         updateCmdList.Add(updateGComment);
                         foreach (WeeklyReportLogRecord rec in WeeklyReportLogRecordList)
                         {
@@ -281,6 +328,8 @@ namespace ESL_System_Behavior.Form
                     {
                         updateCmdList.Add(updatePComment);
 
+                        logStrList.Add("Teacher Comment 由「" + oldTeacherComment + "」改成「" + txtTeacherComment.Text + "」。");
+
                         foreach (WeeklyDataInfo wdi in WeeklyDataInfoList)
                         {
                             if (wdi.UID == SelectedWeeklyDataUID)
@@ -292,18 +341,47 @@ namespace ESL_System_Behavior.Form
 
                     // 更新 Behavior
                     BehaviorInfoList.Clear();
+                    List<string> tmpList = new List<string>();
                     foreach (DataGridViewRow drv in dgBehavior.Rows)
                     {
+                        tmpList.Clear();
                         BehaviorInfo bi = drv.Tag as BehaviorInfo;
                         if (bi != null)
                         {
+                            // 處理 log
+                            if (bi.Comment != drv.Cells[colBComment.Index].Value + "")
+                            {
+                                tmpList.Add("Behavior Comment 由「" + bi.Comment + "」改成「" + drv.Cells[colBComment.Index].Value + "" + "」。");
+                            }
+
+
                             bi.Comment = drv.Cells[colBComment.Index].Value + "";
+
                             bool bG = false, bD = false;
                             bool.TryParse(drv.Cells[colGood.Index].Value + "", out bG);
                             bool.TryParse(drv.Cells[colDetention.Index].Value + "", out bD);
+                            if (bi.isGood != bG)
+                            {
+                                tmpList.Add("Behavior Good 由「" + bi.isGood + "」改成「" + bG + "」。");
+                            }
+
                             bi.isGood = bG;
+
+                            if (bi.isDetention != bD)
+                            {
+                                tmpList.Add("Behavior Detention 由「" + bi.isDetention + "」改成「" + bD + "」。");
+                            }
+
                             bi.isDetention = bD;
-                            
+
+                            if (tmpList.Count > 0)
+                            {
+                                string str = "Behavior 日期:" + bi.CreateDate ;
+                                logStrList.Add(str);
+                                foreach (string s in tmpList)
+                                    logStrList.Add(s);
+                            }
+
                             BehaviorInfoList.Add(bi);
                         }
                     }
@@ -333,6 +411,23 @@ namespace ESL_System_Behavior.Form
                     UpdateHelper uh = new UpdateHelper();
                     uh.Execute(updateCmdList);
 
+                    if (logStrList.Count > 0)
+                    {
+                        //  取得目前所選學生
+                        if (dgStudentData.SelectedRows.Count > 0)
+                        {
+                            WeeklyDataInfo wdi = dgStudentData.SelectedRows[0].Tag as WeeklyDataInfo;
+                            if (wdi != null)
+                            {
+                                string sinfo = "班級:" + wdi.ClassName + " ,座號：" + wdi.SeatNo + "  ,姓名：" + wdi.StudentName + " ,\n";
+                                FISCA.LogAgent.ApplicationLog.Log("ESL 檢視週報表", "修改資料", "student", wdi.StudentID, sinfo + string.Join("\n", logStrList.ToArray()));
+                            }
+
+                        }
+
+
+                    }
+
                     MessageBox.Show("儲存完成");
 
                 }
@@ -354,6 +449,41 @@ namespace ESL_System_Behavior.Form
 
 
             btnSave.Enabled = true;
+        }
+
+        private void dgBehavior_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+
+        }
+
+        private void dgBehavior_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > -1)
+            {
+                if (e.ColumnIndex == colGood.Index)
+                {
+                    bool b;
+                    bool.TryParse(dgBehavior.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + "", out b);
+
+                    if (b == false)
+                    {
+                        dgBehavior.Rows[e.RowIndex].Cells[colGood.Index].Value = true;
+                        dgBehavior.Rows[e.RowIndex].Cells[colDetention.Index].Value = false;
+                    }
+                }
+
+                if (e.ColumnIndex == colDetention.Index)
+                {
+                    bool b;
+                    bool.TryParse(dgBehavior.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + "", out b);
+
+                    if (b == false)
+                    {
+                        dgBehavior.Rows[e.RowIndex].Cells[colGood.Index].Value = false;
+                        dgBehavior.Rows[e.RowIndex].Cells[colDetention.Index].Value = true;
+                    }
+                }
+            }
         }
     }
 }

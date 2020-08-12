@@ -371,7 +371,7 @@
             this.btnEdit.AutoSize = true;
             this.btnEdit.BackColor = System.Drawing.Color.Transparent;
             this.btnEdit.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnEdit.Location = new System.Drawing.Point(683, 563);
+            this.btnEdit.Location = new System.Drawing.Point(677, 563);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(75, 25);
             this.btnEdit.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
