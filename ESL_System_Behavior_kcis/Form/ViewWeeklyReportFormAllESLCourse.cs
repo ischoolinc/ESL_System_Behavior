@@ -45,6 +45,8 @@ namespace ESL_System_Behavior.Form
             comboBoxEx2.Items.Add("2");
             comboBoxEx2.Text = K12.Data.School.DefaultSemester;
 
+            btnDel.Enabled = false;
+            btnEdit.Enabled = false;
         }
 
 
@@ -176,8 +178,7 @@ namespace ESL_System_Behavior.Form
             }
 
             buttonX1.Enabled = true;
-            btnDel.Enabled = true;
-            btnEdit.Enabled = true;
+            CheckButtonEnable();
         }
 
 
@@ -268,6 +269,7 @@ namespace ESL_System_Behavior.Form
         private void LoadEditForm()
         {
             btnEdit.Enabled = false;
+        
             if (dataGridViewX1.Rows.Count > 0)
             {
                 if (dataGridViewX1.SelectedRows.Count == 1)
@@ -298,6 +300,46 @@ namespace ESL_System_Behavior.Form
         private void dataGridViewX1_DoubleClick(object sender, EventArgs e)
         {
             LoadEditForm();
+        }
+
+        private void dataGridViewX1_SelectionChanged(object sender, EventArgs e)
+        {
+            CheckButtonEnable();
+        }
+
+        private void dataGridViewX1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            CheckButtonEnable();
+        }
+
+        private void CheckButtonEnable()
+        {
+            btnEdit.Enabled = false;
+            btnDel.Enabled = false;
+
+            if (dataGridViewX1.Rows.Count > 0)
+            {
+                if (dataGridViewX1.SelectedRows.Count == 1)
+                {
+                    if (dataGridViewX1.SelectedRows[0].Tag != null)
+                    {
+                        string rKey = dataGridViewX1.SelectedRows[0].Tag.ToString();
+                        if (WeeklyReportDataDict.ContainsKey(rKey))
+                        {
+                            if (WeeklyReportDataDict[rKey].Count > 0)
+                            {
+                               
+                                if (WeeklyReportDataDict[rKey][0].WeeklyReportCount > 0)
+                                {
+                                    btnEdit.Enabled = true;
+                                    btnDel.Enabled = true;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 }

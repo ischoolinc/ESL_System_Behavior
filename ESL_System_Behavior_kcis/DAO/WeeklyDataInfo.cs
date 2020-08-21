@@ -17,7 +17,7 @@ namespace ESL_System_Behavior
         public string ClassName { get; set; }
 
 
-        public string SeatNo { get; set; }
+        public int SeatNo { get; set; }
 
 
         public string StudentName { get; set; }
@@ -30,5 +30,9 @@ namespace ESL_System_Behavior
 
 
         public string PersonalComment { get; set; }
+
+        public string StudentNumber { get; set; }
+
+        public string EnglishName { get; set; }
     }
 }

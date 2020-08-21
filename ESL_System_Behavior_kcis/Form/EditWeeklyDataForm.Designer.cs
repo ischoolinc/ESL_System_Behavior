@@ -47,11 +47,13 @@
             this.colGood = new DevComponents.DotNetBar.Controls.DataGridViewCheckBoxXColumn();
             this.txtTeacherComment = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.dgStudentData = new DevComponents.DotNetBar.Controls.DataGridViewX();
+            this.labelX2 = new DevComponents.DotNetBar.LabelX();
+            this.labelX3 = new DevComponents.DotNetBar.LabelX();
+            this.colStudentNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colClassName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSeatNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.labelX2 = new DevComponents.DotNetBar.LabelX();
-            this.labelX3 = new DevComponents.DotNetBar.LabelX();
+            this.colEnglishName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgWeeklyReport)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgBehavior)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStudentData)).BeginInit();
@@ -64,7 +66,7 @@
             this.btnSave.AutoSize = true;
             this.btnSave.BackColor = System.Drawing.Color.Transparent;
             this.btnSave.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnSave.Location = new System.Drawing.Point(911, 759);
+            this.btnSave.Location = new System.Drawing.Point(803, 594);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 25);
             this.btnSave.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -79,7 +81,7 @@
             this.btnCancel.AutoSize = true;
             this.btnCancel.BackColor = System.Drawing.Color.Transparent;
             this.btnCancel.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnCancel.Location = new System.Drawing.Point(1012, 759);
+            this.btnCancel.Location = new System.Drawing.Point(904, 594);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 25);
             this.btnCancel.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -114,7 +116,7 @@
             this.txtGeneralComment.Location = new System.Drawing.Point(12, 159);
             this.txtGeneralComment.Multiline = true;
             this.txtGeneralComment.Name = "txtGeneralComment";
-            this.txtGeneralComment.Size = new System.Drawing.Size(1076, 82);
+            this.txtGeneralComment.Size = new System.Drawing.Size(970, 82);
             this.txtGeneralComment.TabIndex = 1;
             // 
             // dgWeeklyReport
@@ -145,7 +147,7 @@
             this.dgWeeklyReport.Name = "dgWeeklyReport";
             this.dgWeeklyReport.RowTemplate.Height = 24;
             this.dgWeeklyReport.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgWeeklyReport.Size = new System.Drawing.Size(1076, 100);
+            this.dgWeeklyReport.Size = new System.Drawing.Size(970, 100);
             this.dgWeeklyReport.TabIndex = 0;
             this.dgWeeklyReport.SelectionChanged += new System.EventHandler(this.dgWeeklyReport_SelectionChanged);
             // 
@@ -154,12 +156,14 @@
             this.colCourseName.HeaderText = "課程名稱";
             this.colCourseName.Name = "colCourseName";
             this.colCourseName.ReadOnly = true;
+            this.colCourseName.Width = 350;
             // 
             // colTeacherName
             // 
             this.colTeacherName.HeaderText = "教師名稱";
             this.colTeacherName.Name = "colTeacherName";
             this.colTeacherName.ReadOnly = true;
+            this.colTeacherName.Width = 150;
             // 
             // colBBeginDate
             // 
@@ -197,10 +201,10 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgBehavior.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgBehavior.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgBehavior.Location = new System.Drawing.Point(405, 438);
+            this.dgBehavior.Location = new System.Drawing.Point(455, 437);
             this.dgBehavior.Name = "dgBehavior";
             this.dgBehavior.RowTemplate.Height = 24;
-            this.dgBehavior.Size = new System.Drawing.Size(683, 296);
+            this.dgBehavior.Size = new System.Drawing.Size(527, 145);
             this.dgBehavior.TabIndex = 4;
             this.dgBehavior.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgBehavior_CellBeginEdit);
             this.dgBehavior.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgBehavior_CellClick);
@@ -215,14 +219,17 @@
             // 
             this.colBComment.HeaderText = "事由";
             this.colBComment.Name = "colBComment";
+            this.colBComment.Width = 220;
             // 
             // colDetention
             // 
             this.colDetention.Checked = true;
             this.colDetention.CheckState = System.Windows.Forms.CheckState.Indeterminate;
             this.colDetention.CheckValue = "N";
+            this.colDetention.FillWeight = 70F;
             this.colDetention.HeaderText = "Detention";
             this.colDetention.Name = "colDetention";
+            this.colDetention.Width = 72;
             // 
             // colGood
             // 
@@ -231,6 +238,7 @@
             this.colGood.CheckValue = "N";
             this.colGood.HeaderText = "Good";
             this.colGood.Name = "colGood";
+            this.colGood.Width = 70;
             // 
             // txtTeacherComment
             // 
@@ -241,10 +249,10 @@
             // 
             this.txtTeacherComment.Border.Class = "TextBoxBorder";
             this.txtTeacherComment.Border.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.txtTeacherComment.Location = new System.Drawing.Point(405, 298);
+            this.txtTeacherComment.Location = new System.Drawing.Point(455, 298);
             this.txtTeacherComment.Multiline = true;
             this.txtTeacherComment.Name = "txtTeacherComment";
-            this.txtTeacherComment.Size = new System.Drawing.Size(683, 91);
+            this.txtTeacherComment.Size = new System.Drawing.Size(527, 91);
             this.txtTeacherComment.TabIndex = 3;
             // 
             // dgStudentData
@@ -257,9 +265,11 @@
             this.dgStudentData.BackgroundColor = System.Drawing.Color.White;
             this.dgStudentData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgStudentData.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colStudentNumber,
             this.colClassName,
             this.colSeatNo,
-            this.colName});
+            this.colName,
+            this.colEnglishName});
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
@@ -273,9 +283,45 @@
             this.dgStudentData.Name = "dgStudentData";
             this.dgStudentData.RowTemplate.Height = 24;
             this.dgStudentData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgStudentData.Size = new System.Drawing.Size(376, 468);
+            this.dgStudentData.Size = new System.Drawing.Size(425, 316);
             this.dgStudentData.TabIndex = 2;
             this.dgStudentData.SelectionChanged += new System.EventHandler(this.dgStudentData_SelectionChanged);
+            // 
+            // labelX2
+            // 
+            this.labelX2.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX2.BackgroundStyle.Class = "";
+            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX2.ForeColor = System.Drawing.Color.Red;
+            this.labelX2.Location = new System.Drawing.Point(455, 406);
+            this.labelX2.Name = "labelX2";
+            this.labelX2.Size = new System.Drawing.Size(174, 25);
+            this.labelX2.TabIndex = 10;
+            this.labelX2.Text = "Behavior";
+            // 
+            // labelX3
+            // 
+            this.labelX3.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX3.BackgroundStyle.Class = "";
+            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX3.ForeColor = System.Drawing.Color.Red;
+            this.labelX3.Location = new System.Drawing.Point(455, 266);
+            this.labelX3.Name = "labelX3";
+            this.labelX3.Size = new System.Drawing.Size(174, 25);
+            this.labelX3.TabIndex = 11;
+            this.labelX3.Text = "Teacher Comment";
+            // 
+            // colStudentNumber
+            // 
+            this.colStudentNumber.HeaderText = "學號";
+            this.colStudentNumber.Name = "colStudentNumber";
+            this.colStudentNumber.ReadOnly = true;
             // 
             // colClassName
             // 
@@ -296,41 +342,18 @@
             this.colName.Name = "colName";
             this.colName.ReadOnly = true;
             // 
-            // labelX2
+            // colEnglishName
             // 
-            this.labelX2.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.labelX2.BackgroundStyle.Class = "";
-            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX2.ForeColor = System.Drawing.Color.Red;
-            this.labelX2.Location = new System.Drawing.Point(405, 406);
-            this.labelX2.Name = "labelX2";
-            this.labelX2.Size = new System.Drawing.Size(224, 25);
-            this.labelX2.TabIndex = 10;
-            this.labelX2.Text = "Behavor";
-            // 
-            // labelX3
-            // 
-            this.labelX3.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.labelX3.BackgroundStyle.Class = "";
-            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX3.ForeColor = System.Drawing.Color.Red;
-            this.labelX3.Location = new System.Drawing.Point(405, 266);
-            this.labelX3.Name = "labelX3";
-            this.labelX3.Size = new System.Drawing.Size(224, 25);
-            this.labelX3.TabIndex = 11;
-            this.labelX3.Text = "Teacher Comment";
+            this.colEnglishName.HeaderText = "英文姓名";
+            this.colEnglishName.Name = "colEnglishName";
+            this.colEnglishName.ReadOnly = true;
+            this.colEnglishName.Width = 150;
             // 
             // EditWeeklyDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1115, 806);
+            this.ClientSize = new System.Drawing.Size(994, 629);
             this.Controls.Add(this.labelX3);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.dgBehavior);
@@ -342,7 +365,6 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.DoubleBuffered = true;
-            this.MinimumSize = new System.Drawing.Size(981, 845);
             this.Name = "EditWeeklyDataForm";
             this.Text = "修改 Weekly Report ";
             this.Load += new System.EventHandler(this.EditWeeklyDataForm_Load);
@@ -360,21 +382,23 @@
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.Controls.TextBoxX txtGeneralComment;
         private DevComponents.DotNetBar.Controls.DataGridViewX dgWeeklyReport;
+        private DevComponents.DotNetBar.Controls.DataGridViewX dgBehavior;
+        private DevComponents.DotNetBar.Controls.TextBoxX txtTeacherComment;
+        private DevComponents.DotNetBar.Controls.DataGridViewX dgStudentData;
+        private DevComponents.DotNetBar.LabelX labelX2;
+        private DevComponents.DotNetBar.LabelX labelX3;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCourseName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTeacherName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBBeginDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBEndDate;
-        private DevComponents.DotNetBar.Controls.DataGridViewX dgBehavior;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBCreateDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBComment;
         private DevComponents.DotNetBar.Controls.DataGridViewCheckBoxXColumn colDetention;
         private DevComponents.DotNetBar.Controls.DataGridViewCheckBoxXColumn colGood;
-        private DevComponents.DotNetBar.Controls.TextBoxX txtTeacherComment;
-        private DevComponents.DotNetBar.Controls.DataGridViewX dgStudentData;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStudentNumber;
         private System.Windows.Forms.DataGridViewTextBoxColumn colClassName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSeatNo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
-        private DevComponents.DotNetBar.LabelX labelX2;
-        private DevComponents.DotNetBar.LabelX labelX3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEnglishName;
     }
 }

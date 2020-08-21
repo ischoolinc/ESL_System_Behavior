@@ -98,12 +98,14 @@ namespace ESL_System_Behavior.Form
                     ",student.seat_no" +
                     ",student.name AS student_name" +
                     ",personal_comment " +
+                    ",student.student_number AS student_number" +
+                    ",student.english_name AS english_name" +
                     " FROM $esl.weekly_data " +
                     "INNER JOIN student " +
                     " ON student.id = $esl.weekly_data.ref_student_id " +
                     " LEFT JOIN class ON student.ref_class_id = class.id  " +
                     " WHERE $esl.weekly_data.ref_weekly_report_uid =" + rec.UID +
-                    " ORDER BY class.display_order,class_name,seat_no,student.name;";
+                    " ORDER BY student_number,class.display_order,class_name,seat_no,student.name;";
 
                 WeeklyDataInfoList.Clear();
 
@@ -120,8 +122,17 @@ namespace ESL_System_Behavior.Form
                         wdi.TeacherID = rec.TeacherID;
                         wdi.StudentID = "" + dr["student_id"];
                         wdi.PersonalComment = "" + dr["personal_comment"];
-                        wdi.SeatNo = "" + dr["seat_no"];
+                        wdi.SeatNo = 0;
+                        int seatNo;
+                        if(int.TryParse("" + dr["seat_no"],out seatNo))
+                        {
+                            wdi.SeatNo = seatNo;
+                        }
+                       
                         wdi.StudentName = "" + dr["student_name"];
+                        wdi.StudentNumber = "" + dr["student_number"];
+                        wdi.EnglishName = "" + dr["english_name"];
+
                         WeeklyDataInfoList.Add(wdi);
                     }
                 }
@@ -137,6 +148,9 @@ namespace ESL_System_Behavior.Form
                     dgStudentData.Rows[rowIdx].Cells[colClassName.Index].Value = data.ClassName;
                     dgStudentData.Rows[rowIdx].Cells[colSeatNo.Index].Value = data.SeatNo;
                     dgStudentData.Rows[rowIdx].Cells[colName.Index].Value = data.StudentName;
+                    dgStudentData.Rows[rowIdx].Cells[colStudentNumber.Index].Value = data.StudentNumber;
+                    dgStudentData.Rows[rowIdx].Cells[colEnglishName.Index].Value = data.EnglishName;
+
                 }
 
                 if (WeeklyDataInfoList.Count > 0)
