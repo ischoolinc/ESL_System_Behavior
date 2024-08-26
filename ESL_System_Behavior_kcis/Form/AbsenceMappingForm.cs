@@ -62,13 +62,21 @@ namespace ESL_System_Behavior.Form
 
 
                     // 建立原本資訊的字典，作為對照用
-                    oriCommentDict.Add("" + dr["uid"], "" + dr["name"] + "_" + dr["english_name"] + "_" + dr["english_abbreviation"]);
+                    
+                    //修改增加防止基本錯誤
+                    //2024/8/26 - by Dylan
+                    if (!oriCommentDict.ContainsKey("" + dr["uid"]))
+                        oriCommentDict.Add("" + dr["uid"], "" + dr["name"] + "_" + dr["english_name"] + "_" + dr["english_abbreviation"]);
 
                     dataGridViewX1.Rows.Add(row);
 
                     eslSetList.Add("" + dr["name"]);
 
-                    userSettingDict.Add("" + dr["name"], new AbsenceEng() { EnglishName = "" + dr["english_name"], EnglishAbbreviation = "" + dr["english_abbreviation"] });
+                    //修改增加防止基本錯誤
+                    //2024/8/26 - by Dylan
+                    if (!userSettingDict.ContainsKey("" + dr["name"]))
+                        userSettingDict.Add("" + dr["name"], new AbsenceEng() { EnglishName = "" + dr["english_name"], EnglishAbbreviation = "" + dr["english_abbreviation"] });
+
                 }
             }
             else

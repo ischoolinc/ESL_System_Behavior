@@ -62,13 +62,20 @@ namespace ESL_System_Behavior.Form
                     row.Cells[4].Value = dr["sort"];
 
                     // 建立原本資訊的字典，作為對照用
-                    oriCommentDict.Add("" + dr["uid"], "" + dr["name"] + "_" + dr["type"] + "_" + dr["english_name"] + "_" + dr["english_type"] + "_" + dr["sort"]);
+
+                    //修改增加防止基本錯誤
+                    //2024/8/26 - by Dylan
+                    if (!oriCommentDict.ContainsKey("" + dr["uid"]))
+                        oriCommentDict.Add("" + dr["uid"], "" + dr["name"] + "_" + dr["type"] + "_" + dr["english_name"] + "_" + dr["english_type"] + "_" + dr["sort"]);
 
                     dataGridViewX1.Rows.Add(row);
 
                     eslSetList.Add(new Period() { Name = "" + dr["name"], Type = "" + dr["type"], Sort = "" + dr["sort"] });
 
-                    userSettingDict.Add("" + dr["name"], "" + dr["english_name"]);
+                    //修改增加防止基本錯誤
+                    //2024/8/26 - by Dylan
+                    if (!userSettingDict.ContainsKey("" + dr["name"]))
+                        userSettingDict.Add("" + dr["name"], "" + dr["english_name"]);
                 }
             }
             else
