@@ -34,6 +34,8 @@ namespace ESL_System_Behavior.Form
             WeeklyReportLogRecordList = new List<WeeklyReportLogRecord>();
             WeeklyDataInfoList = new List<WeeklyDataInfo>();
             BehaviorInfoList = new List<BehaviorInfo>();
+
+            this.Text = "修改 " + NameCheck.ReportName;
         }
 
         public void SetWeeklyReportLogRecord(List<WeeklyReportLogRecord> data)

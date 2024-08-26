@@ -16,7 +16,9 @@ namespace ESL_System_Behavior
         //2018/4/11 穎驊因應康橋英文系統、弘文ESL 專案 ，開始建構教務作業ESL 評分樣版設定
         [FISCA.MainMethod()]
         public static void Main()
-      {
+        {
+            NameCheck.Check();
+
             #region 設定Behavior General Comment清單
             {
                 // MotherForm.RibbonBarItems["學務作業", "批次作業/查詢"]["設定"].Image = Properties.Resources.blackboard_config_64;
@@ -63,13 +65,13 @@ namespace ESL_System_Behavior
             }
             {
                 Catalog ribbon = RoleAclSource.Instance["課程"]["ESL課程"];
-                ribbon.Add(new RibbonFeature("3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F", "檢視WeeklyReport"));
+                ribbon.Add(new RibbonFeature("3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F", "檢視 "+ NameCheck.ReportName));
 
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Enable = UserAcl.Current["3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F"].Executable;
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Size = RibbonBarButton.MenuButtonSize.Medium;
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Image = Properties.Resources.admissions_zoom_64;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視 " + NameCheck.ReportName].Enable = UserAcl.Current["3ECAD583 - F8D8 - 4DFA - 8299 - 312F603A6F0F"].Executable;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視 " + NameCheck.ReportName].Size = RibbonBarButton.MenuButtonSize.Medium;
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視 " + NameCheck.ReportName].Image = Properties.Resources.admissions_zoom_64;
 
-                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視WeeklyReport"].Click += delegate
+                MotherForm.RibbonBarItems["課程", "ESL課程"]["檢視 " + NameCheck.ReportName].Click += delegate
                 {
                     // 2019/09/12 穎驊修改， 因新竹康橋 WeeklyReport改用 電子報表發送， 
                     //接下來的情境 將不再看WeeklyReport改用 is_send 發送與否， 而是透過後端 檢查是否教師有建立
@@ -97,7 +99,7 @@ namespace ESL_System_Behavior
 
             }
 
-         
+
             #region 生活行為紀錄 毛毛蟲
             {
                 string key = "6B4FFF43-611A-4344-8711-4BA0F85DB73B";
@@ -106,7 +108,7 @@ namespace ESL_System_Behavior
                 {
                     K12.Presentation.NLDPanels.Student.AddDetailBulider(new FISCA.Presentation.DetailBulider<BehaviorItem>());
                 }
-            } 
+            }
             #endregion
         }
     }

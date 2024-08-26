@@ -47,13 +47,13 @@
             this.colGood = new DevComponents.DotNetBar.Controls.DataGridViewCheckBoxXColumn();
             this.txtTeacherComment = new DevComponents.DotNetBar.Controls.TextBoxX();
             this.dgStudentData = new DevComponents.DotNetBar.Controls.DataGridViewX();
-            this.labelX2 = new DevComponents.DotNetBar.LabelX();
-            this.labelX3 = new DevComponents.DotNetBar.LabelX();
             this.colStudentNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colClassName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSeatNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEnglishName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.labelX2 = new DevComponents.DotNetBar.LabelX();
+            this.labelX3 = new DevComponents.DotNetBar.LabelX();
             ((System.ComponentModel.ISupportInitialize)(this.dgWeeklyReport)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgBehavior)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStudentData)).BeginInit();
@@ -287,36 +287,6 @@
             this.dgStudentData.TabIndex = 2;
             this.dgStudentData.SelectionChanged += new System.EventHandler(this.dgStudentData_SelectionChanged);
             // 
-            // labelX2
-            // 
-            this.labelX2.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.labelX2.BackgroundStyle.Class = "";
-            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX2.ForeColor = System.Drawing.Color.Red;
-            this.labelX2.Location = new System.Drawing.Point(455, 406);
-            this.labelX2.Name = "labelX2";
-            this.labelX2.Size = new System.Drawing.Size(174, 25);
-            this.labelX2.TabIndex = 10;
-            this.labelX2.Text = "Behavior";
-            // 
-            // labelX3
-            // 
-            this.labelX3.BackColor = System.Drawing.Color.Transparent;
-            // 
-            // 
-            // 
-            this.labelX3.BackgroundStyle.Class = "";
-            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX3.ForeColor = System.Drawing.Color.Red;
-            this.labelX3.Location = new System.Drawing.Point(455, 266);
-            this.labelX3.Name = "labelX3";
-            this.labelX3.Size = new System.Drawing.Size(174, 25);
-            this.labelX3.TabIndex = 11;
-            this.labelX3.Text = "Teacher Comment";
-            // 
             // colStudentNumber
             // 
             this.colStudentNumber.HeaderText = "學號";
@@ -349,6 +319,36 @@
             this.colEnglishName.ReadOnly = true;
             this.colEnglishName.Width = 150;
             // 
+            // labelX2
+            // 
+            this.labelX2.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX2.BackgroundStyle.Class = "";
+            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX2.ForeColor = System.Drawing.Color.Red;
+            this.labelX2.Location = new System.Drawing.Point(455, 406);
+            this.labelX2.Name = "labelX2";
+            this.labelX2.Size = new System.Drawing.Size(174, 25);
+            this.labelX2.TabIndex = 10;
+            this.labelX2.Text = "Behavior";
+            // 
+            // labelX3
+            // 
+            this.labelX3.BackColor = System.Drawing.Color.Transparent;
+            // 
+            // 
+            // 
+            this.labelX3.BackgroundStyle.Class = "";
+            this.labelX3.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX3.ForeColor = System.Drawing.Color.Red;
+            this.labelX3.Location = new System.Drawing.Point(455, 266);
+            this.labelX3.Name = "labelX3";
+            this.labelX3.Size = new System.Drawing.Size(174, 25);
+            this.labelX3.TabIndex = 11;
+            this.labelX3.Text = "Teacher Comment";
+            // 
             // EditWeeklyDataForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -366,7 +366,7 @@
             this.Controls.Add(this.btnSave);
             this.DoubleBuffered = true;
             this.Name = "EditWeeklyDataForm";
-            this.Text = "修改 Weekly Report ";
+            this.Text = "修改";
             this.Load += new System.EventHandler(this.EditWeeklyDataForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgWeeklyReport)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgBehavior)).EndInit();

@@ -36,6 +36,8 @@ namespace ESL_System_Behavior.Form
         private void BehaviorCommentSettingForm_Load(object sender, EventArgs e)
         {
 
+            Column3.HeaderText = "是否已建立 " +NameCheck.ReportName;
+
             comboBoxEx1.Items.Add("" + (int.Parse(K12.Data.School.DefaultSchoolYear) - 1));
             comboBoxEx1.Items.Add(K12.Data.School.DefaultSchoolYear);
             comboBoxEx1.Items.Add("" + (int.Parse(K12.Data.School.DefaultSchoolYear) + 1));
