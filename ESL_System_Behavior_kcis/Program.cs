@@ -17,7 +17,6 @@ namespace ESL_System_Behavior
         [FISCA.MainMethod()]
         public static void Main()
         {
-            NameCheck.Check();
 
             #region 設定Behavior General Comment清單
             {
