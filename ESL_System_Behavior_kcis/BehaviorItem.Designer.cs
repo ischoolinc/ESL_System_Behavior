@@ -35,22 +35,25 @@
             this.btnInsert = new DevComponents.DotNetBar.ButtonX();
             this.btnUpdate = new DevComponents.DotNetBar.ButtonX();
             this.btnDelete = new DevComponents.DotNetBar.ButtonX();
+            this.colLastUpdate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // ColDate
             // 
-            this.ColDate.Text = "日期";
+            this.ColDate.DisplayIndex = 0;
+            this.ColDate.Text = "登錄日期";
             this.ColDate.Width = 85;
             // 
             // ColComment
             // 
             this.ColComment.Text = "事由";
-            this.ColComment.Width = 319;
+            this.ColComment.Width = 250;
             // 
             // colCourse
             // 
+            this.colCourse.DisplayIndex = 2;
             this.colCourse.Text = "課程";
-            this.colCourse.Width = 85;
+            this.colCourse.Width = 100;
             // 
             // listView
             // 
@@ -62,7 +65,8 @@
             this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColDate,
             this.ColComment,
-            this.colCourse});
+            this.colCourse,
+            this.colLastUpdate});
             this.listView.FullRowSelect = true;
             this.listView.HideSelection = false;
             this.listView.Location = new System.Drawing.Point(13, 8);
@@ -109,6 +113,11 @@
             this.btnDelete.Text = "刪除";
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // colLastUpdate
+            // 
+            this.colLastUpdate.Text = "最後更新日期";
+            this.colLastUpdate.Width = 90;
+            // 
             // BehaviorItem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -132,5 +141,6 @@
         private DevComponents.DotNetBar.ButtonX btnInsert;
         private DevComponents.DotNetBar.ButtonX btnUpdate;
         private DevComponents.DotNetBar.ButtonX btnDelete;
+        private System.Windows.Forms.ColumnHeader colLastUpdate;
     }
 }

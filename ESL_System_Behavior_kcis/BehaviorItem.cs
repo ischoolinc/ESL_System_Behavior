@@ -83,7 +83,7 @@ namespace ESL_System_Behavior
             {
                 foreach (BehaviorRecord record in _listBehaviorReocrd)
                 {
-                    string[] row = { record.CreateDate, record.Comment, record.Course };
+                    string[] row = { record.CreateDate, record.Comment, record.Course , record.LastUpdate};
                     ListViewItem itm = new ListViewItem(row);
                     //如果是 Detention 就 顯示紅色
                     if (record.IsDentetion == true)
@@ -130,6 +130,7 @@ SELECT
 	$esl.behavior_data.ref_student_id
 	, $esl.behavior_data.uid
 	, to_char($esl.behavior_data.create_date, 'yyyy/MM/dd') AS create_date
+	, to_char($esl.behavior_data.last_update, 'yyyy/MM/dd') AS last_update
 	, $esl.behavior_data.comment
 	, $esl.behavior_data.is_good_behavior
 	, $esl.behavior_data.detention
@@ -158,6 +159,7 @@ ORDER BY create_date DESC
                 record.StudentID = row.Field<string>("ref_student_id");
                 record.UID = row.Field<string>("uid");
                 record.CreateDate = row.Field<string>("create_date");
+                record.LastUpdate = row.Field<string>("last_update");
                 record.Comment = row.Field<string>("comment");
                 record.Teacher = row.Field<string>("teacher_name");
                 record.Course = row.Field<string>("course_id");

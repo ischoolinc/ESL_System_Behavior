@@ -25,6 +25,10 @@ namespace ESL_System_Behavior
         /// </summary>
         public string CreateDate { get; set; }
         /// <summary>
+        /// LastUpdate
+        /// </summary>
+        public string LastUpdate { get; set; }
+        /// <summary>
         /// CourseID
         /// </summary>
         public string CourseID { get; set; } //課程ID
